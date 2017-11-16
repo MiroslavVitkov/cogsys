@@ -1,2 +1,4 @@
-# nlp
-Natural Language Processing assignments
+List of subjects
+
+Statistics and R (stats)
+Natural language processing (nlp)
