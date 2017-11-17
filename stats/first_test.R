@@ -97,6 +97,38 @@ mutate(with_mins, rel_time = air_time / min_time)
 "Most delayed flights:"
 arrange(flights, desc(arr_delay - dep_delay))
 
+# 5.7.1 Q2
+# Which plane (tailnum) has the worst on-time record?
+# How many times did each plane fly?
+all <- flights %>% group_by(tailnum) %>% summarise(all = n_distinct(flight))
+# How many of them was it late?
+late <- flights %>% filter(dep_delay > 0) %>% group_by(tailnum) %>% summarise(late = n_distinct(flight))
+# Which plane has the worst record?
+left_join(all, late) %>% mutate(percent = late / all) %>% arrange(desc(percent))
+
+# 5.7.1 Q3
+# What time of day should you fly if you want to avoid delays as much as possible?
+# Calculate average delay per plane.
+# Note that I am not handling negative delays gracefully - what should be done with them?
+total_delay <- flights %>% group_by(hour) %>% summarise(delay = sum(dep_delay, na.rm = TRUE))
+total_planes <- flights %>% group_by(hour) %>% summarise(planes = n_distinct(flight)) 
+left_join(total_delay, total_planes) %>% mutate(avv_delay = delay / planes) %>% arrange(avv_delay)
+"Best take that 1 flight at 0100."
+
+# 5.7.1 Q4
+# Look at the number of cancelled flights per day. Is there a pattern?
+# Is the proportion of cancelled flights related to the average delay?
+# Let's say 'canceled flights' are those with 'NA' in 'dep_time' field.
+# Let's say 'average delay' is the mean of all delays for that day.
+# Again, negative delays not handled properly.
+f <- flights %>% group_by(year, month, day) %>% arrange(day, month, year)
+canceled <- f %>% summarise(num = sum(is.na(dep_time)), percent = num / n())
+avv_daily_dly <- f %>% summarise(dly = sum(dep_delay, na.rm = TRUE))
+combined <- left_join(canceled, avv_daily_dly)
+ggplot(data = combined, mapping = aes(x = percent, y = dly)) + geom_point() + geom_smooth()
+"It seems percent canceled flights per day is indeed related to total delay for that day."
+ 
+
 # Misc
 print("Please refer to the gererated 'Rplot.pdf' for the plots.")
 
