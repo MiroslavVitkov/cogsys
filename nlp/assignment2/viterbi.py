@@ -8,6 +8,7 @@ EISNER_EMISSIONS = {'C': {'1':0.5,'2':0.4,'3':0.1},'H': {'1':0.2, '2':0.4,'3':0.
 
 # Test case - should yield 'HHH'.
 OBSERVATIONS = ['3', '1', '3']
+HIDDEN_STATES = 'HHH'
 
 
 class Node:
@@ -49,4 +50,4 @@ if __name__ == "__main__":
     states = viterbi_init(EISNER_STATES, EISNER_INITIAL_PROBS)
     for o in OBSERVATIONS:
         states = viterbi_step(states, o, EISNER_TRANSITIONS, EISNER_EMISSIONS)
-    print(max(states, key=lambda x: x.prob).path)
+    assert max(states, key=lambda x: x.prob).path == HIDDEN_STATES
