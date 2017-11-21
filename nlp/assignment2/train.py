@@ -14,8 +14,8 @@ CORPUS_eval = "wsj_tagged/wsj_tagged_eval.tt"
 CORPUS_test = "wsj_tagged/wsj_tagged_test.t"
 
 
-def read_sentences(fname):
-    """Read the sentences from an annotated corpus."""
+def read_annotated(fname):
+    '''Read the sentences from an annotated corpus.'''
     with open(fname, 'r') as f:
         sentences = [[]]
         for l in f.readlines():
@@ -31,6 +31,23 @@ def read_sentences(fname):
         sentences.pop()
         return sentences
 
+
+def read_unannotated(fname):
+    '''Read sentences from an unannotated corpus.'''
+    with open(fname, 'r') as f:
+        sentences = [[]]
+        for l in f.readlines():
+            s = l.strip().lower()
+            if s:
+                # Next word, append to sentence.
+                sentences[-1].append(s)
+            else:
+                # Sentence has ended.
+                sentences.append([])
+
+        # Get rid of '[]' in the end.
+        sentences.pop()
+        return sentences
 
 # Unused.
 def calc_vocabulary_size(sentences):
@@ -88,8 +105,27 @@ def calc_emissions(sentences):
 
     return ret
 
+
+class Train:
+    '''Glue class.'''
+    def __init__(self, fname=CORPUS_train):
+        self.sen = read_annotated(fname)
+
+
+    def get_initial(self):
+        return calc_initial(self.sen)
+
+
+    def get_transitions(self):
+        return calc_transitions(self.sen)
+
+
+    def get_emissions(self):
+        return calc_emissions(self.sen)
+
+
 if __name__ == "__main__":
-    sen = read_sentences(CORPUS_train)
+    sen = read_anotated(CORPUS_train)
     # print(calc_initial(sen))
     # print(calc_transitions(sen))
     # print(calc_vocabulary_size(sen))
