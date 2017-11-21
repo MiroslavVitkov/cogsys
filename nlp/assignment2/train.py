@@ -5,6 +5,7 @@
 
 
 from collections import defaultdict
+from itertools import chain
 
 
 # Imposed by assignment. Copyrighted, therefore not redistributed.
@@ -31,8 +32,9 @@ def read_sentences(fname):
         return sentences
 
 
+# Unused.
 def calc_vocabulary_size(sentences):
-    '''Return vocabulary size in word space, POS tag space.'''
+    '''Return vocabulary size in (word space, POS tag space).'''
     words = set()
     tags = set()
     for s in sentences:
@@ -47,7 +49,10 @@ def calc_initial(sentences):
         # Count only the first tag in each sentence.
         tag = s[0][1]
         d[tag] += 1
-    return d
+
+    # Normalize.
+    total = sum(d.values())
+    return {k: v/total for k, v in d.items()}
 
 
 def calc_transitions(sentences):
@@ -59,16 +64,33 @@ def calc_transitions(sentences):
     d = defaultdict(lambda: defaultdict(lambda: 0))
     for (b1, b2) in bigrams:
         d[b1][b2] += 1
-    return d
+
+    # Normalize.
+    ret = {}
+    for tag, dist in d.items():
+        total = sum(dist.values())
+        ret[tag] = {k: v/total for k, v in dist.items()}
+
+    return ret
 
 
 def calc_emissions(sentences):
-    pass
+    '''Returns a family of distributions: given tag, what words could be generated.'''
+    d = defaultdict(lambda: defaultdict(lambda: 0))
+    for word, tag in chain.from_iterable(sentences):
+        d[tag][word] += 1  # Note reversed ordering compared to the corpus!
 
-# TODO: normalise each of the three functions above
+    # Normalize.
+    ret = {}
+    for tag, dist in d.items():
+        total = sum(dist.values())
+        ret[tag] = {k: v/total for k, v in dist.items()}
+
+    return ret
 
 if __name__ == "__main__":
     sen = read_sentences(CORPUS_train)
     # print(calc_initial(sen))
-    #print(calc_transitions(sen))
-    print(calc_vocabulary_size(sen))
+    # print(calc_transitions(sen))
+    # print(calc_vocabulary_size(sen))
+    # print(calc_emissions(sen))
