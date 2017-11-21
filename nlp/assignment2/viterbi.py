@@ -46,8 +46,20 @@ def viterbi_step(states, obs, a, b):
     return ret
 
 
+class Viterbi:
+    '''Glue class.'''
+    def __init__(self, state_names, init_probs, trans_probs, emit_probs):
+        self.nodes = viterbi_init(state_names, init_probs)
+        self.trans_probs = trans_probs
+        self.emit_probs = emit_probs
+
+
+    def run(self, observations):
+        for o in observations:
+            self.nodes = viterbi_step(self.nodes, o, self.trans_probs, self.emit_probs)
+        return max(self.nodes, key=lambda x: x.prob).path
+
+
 if __name__ == "__main__":
-    states = viterbi_init(EISNER_STATES, EISNER_INITIAL_PROBS)
-    for o in OBSERVATIONS:
-        states = viterbi_step(states, o, EISNER_TRANSITIONS, EISNER_EMISSIONS)
-    assert max(states, key=lambda x: x.prob).path == HIDDEN_STATES
+    v = Viterbi(EISNER_STATES, EISNER_INITIAL_PROBS, EISNER_TRANSITIONS, EISNER_EMISSIONS)
+    assert v.run(OBSERVATIONS) == HIDDEN_STATES
