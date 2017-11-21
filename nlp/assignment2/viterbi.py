@@ -6,9 +6,18 @@ EISNER_INITIAL_PROBS = {'C': 0.2, 'H': 0.8}
 EISNER_TRANSITIONS = {'C': {'C':0.6, 'H': 0.4}, 'H': {'C':0.3, 'H':0.7}}
 EISNER_EMISSIONS = {'C': {'1':0.5,'2':0.4,'3':0.1},'H': {'1':0.2, '2':0.4,'3':0.4}}
 
-# Test case - should yield 'HHH'.
-OBSERVATIONS = ['3', '1', '3']
+# Test cases.
+OBSERVATIONS =  '313'
 HIDDEN_STATES = 'HHH'
+
+# OBSERVATIONS =  '2132112'
+# HIDDEN_STATES = 'HHHHCCC'
+
+# OBSERVATIONS =  '31311311133322211
+# HIDDEN_STATES = 'HHHCCHCCCHHHHHHCC'
+
+
+from collections import defaultdict
 
 
 class Node:
@@ -18,13 +27,17 @@ class Node:
         self.prob = prob
         self.path = path  # concatinated state names
 
+    def __repr__(self):
+        return 'Node(state=%s, prob=%.10f, path=%s)' % (
+                self.state, self.prob, self.path)
 
-def viterbi_init(state_names, probs):
+
+def init(init_probs):
     '''Generate trellis nodes for time==0.'''
-    return [Node(s, probs[s]) for s in state_names]
+    return [Node(state, prob) for state, prob in init_probs.items()]
 
 
-def viterbi_step(states, obs, a, b):
+def step(states, obs, a, b):
     '''
     Perform a single step of the Viterbi algorithm.
     Initial states and termination are not handled.
@@ -46,20 +59,28 @@ def viterbi_step(states, obs, a, b):
     return ret
 
 
-class Viterbi:
-    '''Glue class.'''
-    def __init__(self, state_names, init_probs, trans_probs, emit_probs):
-        self.nodes = viterbi_init(state_names, init_probs)
-        self.trans_probs = trans_probs
-        self.emit_probs = emit_probs
+def to_2d_def(dict_of_dicts):
+    '''Used to assign 0 probability to unexpected observations.'''
+    d = defaultdict(lambda: defaultdict(lambda: 0))
+    for k, v in dict_of_dicts.items():
+        d[k] = defaultdict(lambda: 0, v)
+    return d
+
+
+class Unsmoothed:
+    def __init__(self, init_probs, trans_probs, emit_probs):
+        self.nodes = init(init_probs)
+        self.trans_probs = to_2d_def(trans_probs)
+        self.emit_probs = to_2d_def(emit_probs)
 
 
     def run(self, observations):
         for o in observations:
-            self.nodes = viterbi_step(self.nodes, o, self.trans_probs, self.emit_probs)
+            print(self.nodes)
+            self.nodes = step(self.nodes, o, self.trans_probs, self.emit_probs)
         return max(self.nodes, key=lambda x: x.prob).path
 
 
 if __name__ == "__main__":
-    v = Viterbi(EISNER_STATES, EISNER_INITIAL_PROBS, EISNER_TRANSITIONS, EISNER_EMISSIONS)
+    v = Unsmoothed(EISNER_INITIAL_PROBS, EISNER_TRANSITIONS, EISNER_EMISSIONS)
     assert v.run(OBSERVATIONS) == HIDDEN_STATES
