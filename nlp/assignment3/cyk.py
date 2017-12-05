@@ -2,11 +2,20 @@
 
 '''
 Usage: cyk "sentence"
+
 Produces all possible parse trees for a string, given grammar GRAMMAR_FILE.
+Source: https://en.wikipedia.org/wiki/CYK_algorithm
+
+Firstly, a Chomsky normal form grammar is read in from a file.
+Then, for each given string, words (terminals) are replaced
+with tags (nonterminals), according to the grammar.
+Then those terminals are combined according to the grammar,
+producing all possible parse trees.
 '''
 
 
 import itertools
+import numpy as np
 
 
 GRAMMAR_FILE = "res/atis-grammar-cnf.cfg"
@@ -14,14 +23,9 @@ START_TAG = 'SIGMA'
 
 
 def read_cnf_grammar(fname):
-    '''
-    fname - Chomsky normal form grammar.
-    '''
-    term0 = []
-    term1 = []
-    nonterm0 = []
-    nonterm1 = []
-    nonterm2 = []
+    '''fname - Chomsky normal form grammar.'''
+    term0 = term1 = []
+    nonterm0 = nonterm1 = nonterm2 = []
     with open(fname, 'r') as f:
         for l in f.readlines():
             s = l.split()
@@ -37,92 +41,80 @@ def read_cnf_grammar(fname):
     return (term0, term1, nonterm0, nonterm1, nonterm2)
 
 
-def preprocess(string):
-    '''We are using space as a separator - make sure punctuation is recognised'''
-    for punct in '.,!?':
-        string = string.replace(punct, ' ' + punct)
-    return string
+def tags_to_indices(grammar):
+    '''Replace each tag string with a number.'''
+    # Construct an ordered container of unique exhaustive set of tags.
+    print('Determinig unique tags...')
+    tags = set(grammar[0])
+    tags.update(grammar[2])
+    tags = list(tags)
+
+    def tag_to_idx(tag):
+        for i, v in enumerate(tags):
+            if(v == tag):
+                return i
+
+    def tags_to_ids(iterable):
+        return list(map(tag_to_idx, iterable))
+
+    print('Converting strings to integers...')
+    g0 = tags_to_ids(grammar[0])
+    g2 = tags_to_ids(grammar[2])
+    g3 = tags_to_ids(grammar[3])
+    g4 = tags_to_ids(grammar[4])
+
+    # All tag strings are replaced with integers.
+    return (g0, grammar[1], g2, g3, g4), tags
 
 
-def terms_to_preterms(preterms, terms, string):
+def words_to_tags(grammar, sentence):
     '''Replace each word in `string` with a set of possible tags.'''
-    # step 0 - discard terminals
-    parse_tree = []
-    for word in preprocess(string).lower().split():
-        tags = [preterms[i] for i, x in enumerate(terms) if x == word]
-        parse_tree.append(set(tags))
-    return parse_tree
+    # We are using space as a separator - make sure punctuation is recognised.
+    for punct in '.,!?':
+        sentence = sentence.replace(punct, ' ' + punct)
+
+    to_tags = []
+    for word in sentence.lower().split():
+        tags = [grammar[0][i] for i, x in enumerate(grammar[1]) if x == word]
+        to_tags.append(set(tags))
+    print('Preterminals identified:', to_tags)
+    return to_tags
 
 
-def derive(nonterms0, nonterms1, nonterms2, preterms):
-    '''Do one iteration of deriving tags. Resulting list is 1 item shorter.'''
-    # step 1 -  consider word sequences of length 2 - this does not require hystory
-    rules_rhs = list(zip(nonterms1, nonterms2))
-    ret = []
-    for d in zip(preterms, preterms[1:]):
-        ret.append(set())
-        for c in itertools.product(d[0], d[1]):
-            [ret[-1].add(nonterms0[i]) for i, r in enumerate(rules_rhs) if c == r]
-    return ret
+def make_chart(grammar, sentence):
+    '''Implement CYK parsing algorithm.'''
+    print('Replacing tag strings with integers...')
+    grammar, tags = tags_to_indices(grammar)
+    print('Converting words to preterminal tags...')
+    preterms = words_to_tags(grammar, sentence)
+    chart = np.zeros((len(preterms), len(preterms), len(tags)), dtype=bool)
+
+    # Zeroeth chart row.
+    for word_index, p in enumerate(preterms):
+        for tag_index in p:
+            chart[0, word_index, tag_index] = True
+
+    # Iterative step.
+    for l in range(2, len(preterms)):  # Length of span.
+        print('l =', l)
+        for s in range(0, len(preterms)-l):  # Start of span.
+            for p in range(1, l-1):  # Partition of span.
+                for lhs, rhs0, rhs1 in zip(grammar[2], grammar[3], grammar[4]):
+                    if(chart[p,s,rhs0] and chart[l-p, s+p, rhs1]):
+                        print('Found tag', t, 'in position', l, s)
+                        chart[l,s,t] = True
+
+    return chart, tags
 
 
-def step2(nonterms0, nonterms1, nonterms2, preterms, nonterms)):
-    # step 2 -  consider word sequences of length 3
-    rules_rhs = list(zip(nonterms1, nonterms2))
-    ret = []
-    #ret.append(preterms[0] - nonterm[1]; preterms[1] - nonterm[0])
-    #ret.append(preterms[1] - nonterm[2]; preterms[2] - nonterm[1])
-    #ret.append(preterms[2] - nonterm[3]; preterms[3] - nonterm[2])
-
-    for d in itertools.chain(zip(preterms, nonterms[1:], zip(nonterms[1:], preterms[1:])):
-        ret.append(set())
-        for c in itertools.product(d[0], d[1]):
-            [ret[-1].add(nonterms0[i]) for i, r in enumerate(rules_rhs) if c == r]
-    return ret
-
-
-def step3(nonterms0, nonterms1, nonterms2, preterms, nonterms, currents)):
-    # step 2 -  consider word sequences of length 4
-    rules_rhs = list(zip(nonterms1, nonterms2))
-    ret = []
-    #ret.append(preterms[0] - nonterm[1]; preterms[1] - nonterm[0])
-    #ret.append(preterms[1] - nonterm[2]; preterms[2] - nonterm[1])
-    #ret.append(preterms[2] - nonterm[3]; preterms[3] - nonterm[2])
-
-    for d in itertools.chain(zip(preterms, nonterms[1:], zip(nonterms[1:], preterms[1:])):
-        ret.append(set())
-        for c in itertools.product(d[0], d[1]):
-            [ret[-1].add(nonterms0[i]) for i, r in enumerate(rules_rhs) if c == r]
-    return ret
-
-
-
-def parse(grammar, string):
-    tree = []  # first row is unigraphs, second row is digraphs etc.
-    row = terms_to_preterms(grammar[0], grammar[1], string)
-    while(len(row) > 1):
-        tree.append(row)
-        row = derive(grammar[2], grammar[3], grammar[4], tree)
-    return row
-
-
-def is_in_grammar(string, fname=GRAMMAR_FILE):
+def is_in_grammar(sentence, fname=GRAMMAR_FILE):
+    print('Reading grammar...')
     grammar = read_cnf_grammar(fname)
-    head_cell = parse(grammar, string)
-    if START_TAG in head_cell:
-        return True
-    else:
-        return False
-
-
-class CYKParser:
-    def __init__(vikings, grammar=GRAMMAR_FILE):
-        vikings._grammar = read_cnf_grammar(grammar)
-        vikings._rules_rhs = list(zip(grammar[-2], grammar[-1]))
-
-
-    def parse(vikings, sentence):
-        pass
+    print('Making chart...')
+    chart, tags = make_chart(grammar, sentence)
+    print('Inspecting result...')
+    start = [i for i, v in enumerate(tags) if v == START_TAG]
+    return start in chart[-1,0]
 
 
 if __name__ == '__main__':
