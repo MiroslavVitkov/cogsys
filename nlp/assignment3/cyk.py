@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
-'''Qs'''
+'''
+Usage: cyk "sentence"
+Produces all possible parse trees for a string, given grammar GRAMMAR_FILE.
+'''
 
 
 import itertools
@@ -43,6 +46,7 @@ def preprocess(string):
 
 def terms_to_preterms(preterms, terms, string):
     '''Replace each word in `string` with a set of possible tags.'''
+    # step 0 - discard terminals
     parse_tree = []
     for word in preprocess(string).lower().split():
         tags = [preterms[i] for i, x in enumerate(terms) if x == word]
@@ -52,6 +56,7 @@ def terms_to_preterms(preterms, terms, string):
 
 def derive(nonterms0, nonterms1, nonterms2, preterms):
     '''Do one iteration of deriving tags. Resulting list is 1 item shorter.'''
+    # step 1 -  consider word sequences of length 2 - this does not require hystory
     rules_rhs = list(zip(nonterms1, nonterms2))
     ret = []
     for d in zip(preterms, preterms[1:]):
@@ -61,10 +66,43 @@ def derive(nonterms0, nonterms1, nonterms2, preterms):
     return ret
 
 
+def step2(nonterms0, nonterms1, nonterms2, preterms, nonterms)):
+    # step 2 -  consider word sequences of length 3
+    rules_rhs = list(zip(nonterms1, nonterms2))
+    ret = []
+    #ret.append(preterms[0] - nonterm[1]; preterms[1] - nonterm[0])
+    #ret.append(preterms[1] - nonterm[2]; preterms[2] - nonterm[1])
+    #ret.append(preterms[2] - nonterm[3]; preterms[3] - nonterm[2])
+
+    for d in itertools.chain(zip(preterms, nonterms[1:], zip(nonterms[1:], preterms[1:])):
+        ret.append(set())
+        for c in itertools.product(d[0], d[1]):
+            [ret[-1].add(nonterms0[i]) for i, r in enumerate(rules_rhs) if c == r]
+    return ret
+
+
+def step3(nonterms0, nonterms1, nonterms2, preterms, nonterms, currents)):
+    # step 2 -  consider word sequences of length 4
+    rules_rhs = list(zip(nonterms1, nonterms2))
+    ret = []
+    #ret.append(preterms[0] - nonterm[1]; preterms[1] - nonterm[0])
+    #ret.append(preterms[1] - nonterm[2]; preterms[2] - nonterm[1])
+    #ret.append(preterms[2] - nonterm[3]; preterms[3] - nonterm[2])
+
+    for d in itertools.chain(zip(preterms, nonterms[1:], zip(nonterms[1:], preterms[1:])):
+        ret.append(set())
+        for c in itertools.product(d[0], d[1]):
+            [ret[-1].add(nonterms0[i]) for i, r in enumerate(rules_rhs) if c == r]
+    return ret
+
+
+
 def parse(grammar, string):
+    tree = []  # first row is unigraphs, second row is digraphs etc.
     row = terms_to_preterms(grammar[0], grammar[1], string)
     while(len(row) > 1):
-        row = derive(grammar[2], grammar[3], grammar[4], row)
+        tree.append(row)
+        row = derive(grammar[2], grammar[3], grammar[4], tree)
     return row
 
 
@@ -88,4 +126,5 @@ class CYKParser:
 
 
 if __name__ == '__main__':
-    print(is_in_grammar("Arrivals important."))
+    import sys
+    print(is_in_grammar(sys.argv[1]))
