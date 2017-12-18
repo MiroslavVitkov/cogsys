@@ -279,3 +279,18 @@ although I would prefer not to have 1700 lines of output in the notebooks...
 new messages
 Ignatia 9:33 PM
 how about printing only the mean accuracies on the NB, and attaching a file with the detail results ?
+
+
+---
+def dicts(t): return {k: dicts(t[k]) for k in t}
+
+Now we can prettyprint the structure with pprint(dicts(taxonomy)):
+
+add(taxonomy,
+    'Animalia>Chordata>Mammalia>Cetacea>Balaenopteridae>Balaenoptera>blue whale'.split('>'))
+
+We can implement this simply as:
+
+def add(t, path):
+  for node in path:
+    t = t[node]
