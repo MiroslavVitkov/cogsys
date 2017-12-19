@@ -84,16 +84,54 @@ class Node:
 #( (NP (NN Ad) (NNS Notes) (: ...) (. .)) )
 
         # Recursively and immutably construct the tree bottom-up.
-        from itertools import islice
-        string = '( (NP (NN Ad) (NNS Notes) (: ...) (. .)) )'
-        it = islice(string, 0, len(string))
-        for 
-        return string[2:15]
+        #from itertools import islice
+        #it = islice(string, 0, len(string))
+        #return string[2:15]
         # construct children first:
         # strip first and last bracket
         # identify tag, children
         
         # descend into children
+
+        # Test input 1.
+        string = '( (NP (NN Ad) (NNS Notes) (: ...) (. .)) )'
+
+        # Strip root node markings.
+        stripped = string[3:-2]
+
+        # Identify the tag name, whih is our node's value.
+        tag = stripped.split()[0]
+
+        # Identify between 0 and Inf children.
+        def extract_one_node(string):
+            # Identify first opening bracket.
+            try:
+                first = string.index('(')
+            except:
+                return '', ''
+
+            # Identify the matching closing bracket.
+            last = None
+            depth = 1
+            for i in range(first+1, len(string)):
+                if string[i] == '(':
+                    depth += 1
+                elif string[i] == ')':
+                    depth -= 1
+                if depth == 0:
+                    last = i
+                    break
+
+            # Return x, xs, brackets stripped.
+            return string[first+1:last], string[last+1:]
+
+
+        return extract_one_node('kur(zadvama)abc()()()()d')
+        #children = []
+
+        #return tag, children
+
+
 
 if __name__ == '__main__':
     print(Node.deserialize('kurskapaci'))
