@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-# open file -> read lines -> create recursive tree
-# -> cropweeds
+# open file -> read lines -> create recursive tree -> crop weeds
+
 
 '''Construct sentence tree from tokanised text or from a serialised tree.'''
 
 
-def _extract_one_node(string):
+def _get_first_child(string):
     # Identify first opening bracket.
     try:
         first = string.index('(')
@@ -24,39 +24,27 @@ def _extract_one_node(string):
             last = i
             break
 
-    # Return x, xs, brackets stripped.
+    # Return x, xs; brackets stripped.
     return string[first+1:last], string[last+1:]
 
 
+def _get_head_tag(string):
+    tag = string.split()[0]  # first word
+    tag = tag[1:]  # remove initial '('
+    return tag
 
 
+def _split_into_children(string):
+    # Identify between 0 and Inf children.
+    children = []
+    while True:
+        child, string = _get_first_child(string)
+        if(child):
+            children.append(child)
+        else:
+            break
 
-import re
-from collections import defaultdict
-
-
-def read(fname):
-    '''Read a parse tree file into a string.'''
-    with open(fname, 'r') as f:
-        return [l for l in f.readlines()]
-
-
-# Utilize autovivification.
-def tree(): return defaultdict(tree)
-
-
-
-def _deserialize(serial):
-    if not serial:
-        return None
-
-    node = None
-    value = serial.pop()
-    if value != 'x':
-        node = Node(value)
-        node.left = _deserialize(serial)
-        node.right = _deserialize(serial)
-    return node
+    return children
 
 
 class Node:
@@ -66,31 +54,19 @@ class Node:
         self.children = children
 
     def __repr__(self):
-        children_repr = ",".join(repr(child) for child in self.children)
-        return 'Node({.value},[{}])'.format(self, children_repr)
+        return 'kur'
 
-    @staticmethod
-    def deserialize(string):
-        '''Example input: `( (NP (NNP NCNB) (NNP Corp) (. .)) )`'''
-        # Strip root node markings.
-        stripped = string[3:-2]
 
-        # Identify the tag name, whih is our node's value.
-        tag = stripped.split()[0]
 
-        # Identify between 0 and Inf children.
-        children = []
-        while True:
-            child, rest = _extract_one_node(stripped)
-            if(child):
-                children.append(child)
-                stripped = rest
-            else:
-                break
+def build_tree(string):
+    if not string:
+        return None
 
-        return tag, children
+    tag = _get_head_tag(string)
+    children = _split_into_children(string)
 
+    return Node(tag, children)
 
 
 if __name__ == '__main__':
-    print(Node.deserialize('( (S (NP (DT This) (NN time)) (, ,) (NP (DT the) (NNS firms)) (VP (VBD were) (ADJP (JJ ready))) (. .)) )'))
+    print(build_tree('(S (NP (DT This) (NN time)) (, ,) (NP (DT the) (NNS firms)) (VP (VBD were) (ADJP (JJ ready))) (. .))'))
