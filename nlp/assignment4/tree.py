@@ -41,31 +41,10 @@ def read(fname):
         return [l for l in f.readlines()]
 
 
-
-
-
 # Utilize autovivification.
 def tree(): return defaultdict(tree)
 
 
-def _on_open_bracket():  # create new node
-    pass
-
-
-def _on_close_bracket():  # end something
-    pass
-
-
-# depth = 0
-# on open bracket, depth++, create new node
-# on close bracket, dept--
-
-
-def deserialize():
-    '''Read a tree from a file in the format ( (NP (NNP NCNB) (NNP Corp) (. .)) )'''
-    with open(fname, 'r') as f:
-        for l in f.readlines():
-            pass
 
 def _deserialize(serial):
     if not serial:
@@ -93,19 +72,6 @@ class Node:
     @staticmethod
     def deserialize(string):
         '''Example input: `( (NP (NNP NCNB) (NNP Corp) (. .)) )`'''
-#(TOP (NP (NNP ARNOLD) (NNP ADVERTISING) (: :)))
-#( (NP (NN Ad) (NNS Notes) (: ...) (. .)) )
-
-        # One approach would be to procedurally loop through the input string,
-        # keeping a pointer where the next nood needs to be inserted,
-        # building the tree bottom-up, left to right.
-        # For no particular reason, we decide to instead use a functional approach,
-        # where each subtree is recursively passed the substring that describes it.
-        return eval(string.replace("#", "()").replace("(", "Node("))
-
-    @staticmethod
-    def deserialize(string):
-        '''Example input: `( (NP (NNP NCNB) (NNP Corp) (. .)) )`'''
         # Strip root node markings.
         stripped = string[3:-2]
 
@@ -127,4 +93,4 @@ class Node:
 
 
 if __name__ == '__main__':
-    print(Node.deserialize('( (NP (NN Ad) (NNS Notes) (: ...) (. .)) )'))
+    print(Node.deserialize('( (S (NP (DT This) (NN time)) (, ,) (NP (DT the) (NNS firms)) (VP (VBD were) (ADJP (JJ ready))) (. .)) )'))
