@@ -1,85 +1,5 @@
 #!/usr/bin/env python3
-
-
-# coding: utf-8
-from collections import defaultdict,namedtuple
-from itertools   import product,repeat
-from msgpack     import pack,unpack
-from sys         import stdout
-
-import numpy as np
-import math
-
-
-
-
-
-
-from collections import defaultdict
-from itertools import product
-
-class IBM1:
-    '''IBM1 word alignment model.'''
-    def __init__(self, corpus):
-        '''corpus - list(english_sentence, foreign_sentence)'''
-
-        self.probs = defaultdict(defaultdict(lambda: 0))
-
-        # Compute all possible alignments.
-        aligns = defaultdict(set)
-        for e_sen, f_sen in corpus:
-            е_sen = (None,) + е_sen
-            for f_word, e_word in product(f_sen, e_sen):
-                aligns[e_word].add(f_word)
-
-        # Compute uniform initial probabilities for each alignment.
-        for e_word, f_word_set in alignes.items():
-            prob = 1/len(f_word_set)
-            for f_word in f_word_set:
-                self.probs[e_word][f_word] = prob
-
-
-    def em_iter():
-        '''Run a single iteration of the EM algorithm on the model'''
-        # E-Step
-        for e, f in corpus:
-            e = (None,) + e
-
-
-    def em_iter2(self, corpus, passnum=1):
-        '''Run a single iteration of the EM algorithm on the model'''
-        likelihood = 0.0
-        c1 = defaultdict(float) # ei aligned with fj
-        c2 = defaultdict(float) # ei aligned with anything
-
-        # The E-Step
-        for(f, e) in corpus:
-            e = IBM.nones(self.param.q0) + e
-            l = len(e)
-            m = len(f) + 1
-            q = 1 / float(l)
-
-            for i in range(1, m):
-
-                num = [ q * self.t[(f[i - 1], e[j])] for j in range(0,l) ]
-                den = float(sum(num))
-                likelihood += math.log(den)
-
-                for j in range(0, l):
-
-                    delta = num[j] / den
-
-                    c1[(f[i - 1], e[j])] += delta
-                    c2[(e[j],)]          += delta
-
-        # The M-Step
-        self.t = defaultdict(float, {
-            k: (v + self.param.n) / (c2[k[1:]] + (self.param.n * self.param.v))
-            for k, v in c1.items() if v > 0.0 })
-
-        return likelihood
-
-
+class A:
     def viterbi_alignment(self, f, e):
         """Returns an alignment from the provided french sentence to the english sentence"""
 
@@ -218,10 +138,12 @@ def main2():
     run(corpus, ibm, lambda: ibm.uniform(corpus), path.join(data_path, 'model', 'ibm1', 'uniform'), corpus_name, 20)
 
 
-#!/usr/bin/env python
-"""An implementation of the IBM Model 1 expectation-maximization
-algorithm for learning word alignments.
-"""
+
+
+
+
+
+
 
 from collections import defaultdict
 import copy
@@ -250,6 +172,13 @@ class IBM1:
                               for e, f in zip(sentences_e, sentences_f)]
 
 
+    def run(vikings):
+        while vikings.conditional_probs_old != vikings.conditional_probs:
+            vikings.conditional_probs_old = copy.copy(vikings.conditional_probs)
+            vikings.em_iter()
+        return vikings.conditional_probs
+
+
     def em_iter(vikings):
         '''Do a single iteration of the EM algorithm.'''
         alignment_probs = {
@@ -276,30 +205,23 @@ class IBM1:
         word_translations = defaultdict(lambda: defaultdict(float))
         for sentence_alignments in alignment_probs.values():
             for word_pairs, prob in sentence_alignments.items():
-                for source_word, target_word in word_pairs:
-                    word_translations[target_word][source_word] += prob
+                for word_e, word_f in word_pairs:
+                    word_translations[word_f][word_e] += prob
 
         # Now calculate new conditional probability mapping, ungrouping
         # the `word_translations` tree and normalizing values into
         # conditional probabilities
         conditional_probs = {}
-        for target_word, translations in word_translations.items():
+        for word_f, translations in word_translations.items():
             total = float(sum(translations.values()))
-            for source_word, score in translations.items():
-                conditional_probs[source_word, target_word] = score / total
-
-
-    def run(vikings):
-        while vikings.conditional_probs_old != vikings.conditional_probs:
-            vikings.conditional_probs_old = copy.copy(vikings.conditional_probs)
-            vikings.em_iter()
-        return vikings.conditional_probs
+            for word_e, score in translations.items():
+                conditional_probs[word_e, word_f] = score / total
 
 
 def main():
     sen_e = ['my green house'.split(), 'green house'.split(), 'the house'.split()]
     sen_f = ['mi casa verde'.split(), 'casa verde'.split(), 'la casa'.split()]
-    ibm = IBM1(sen_e, sen_f)
+    ibm = IBM1(sen_f, sen_e)
     print(ibm.run())
 
 
