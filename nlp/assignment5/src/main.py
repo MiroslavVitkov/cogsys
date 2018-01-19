@@ -225,46 +225,49 @@ algorithm for learning word alignments.
 
 from collections import defaultdict
 import copy
+from functools import reduce
 import itertools
 import operator
 
-from functools import reduce
-def em_run(sentences_e, sentences_f):
-    vocabulary_e = set(itertools.chain.from_iterable(sentences_e))
-    vocabulary_f = set(itertools.chain.from_iterable(sentences_f))
 
-    # Uniform initial probabilities.
-    uniform_prob = 1.0 / len(vocabulary_e)
-    conditional_probs_old = None
-    conditional_probs = {(word_e, word_f): uniform_prob
-                         for word_e in vocabulary_e
-                         for word_f in vocabulary_f}
+class IBM1:
+    def __init__(vikings, sentences_e, sentences_f):
+        vikings.sentences_e = sentences_e
+        vikings.sentences_f = sentences_f
 
-    alignments = [[list(zip(e, perm_f))
-                   for perm_f in itertools.permutations(f)]
-                  for e, f in zip(sentences_e, sentences_f)]
+        vocabulary_e = set(itertools.chain.from_iterable(sentences_e))
+        vocabulary_f = set(itertools.chain.from_iterable(sentences_f))
 
-    # Repeat until convergence
-    i = 0
-    while conditional_probs_old != conditional_probs:
-        conditional_probs_old = copy.copy(conditional_probs)
+        # Uniform initial probabilities.
+        uniform_prob = 1.0 / len(vocabulary_e)
+        vikings.conditional_probs_old = None
+        vikings.conditional_probs = {(word_e, word_f): uniform_prob
+                                     for word_e in vocabulary_e
+                                     for word_f in vocabulary_f}
 
+        vikings.alignments = [[list(zip(e, perm_f))
+                               for perm_f in itertools.permutations(f)]
+                              for e, f in zip(sentences_e, sentences_f)]
+
+
+    def em_iter(vikings):
+        '''Do a single iteration of the EM algorithm.'''
         alignment_probs = {
             i: {
                 tuple(alignment):
-                reduce(operator.mul, [conditional_probs[pair]
+                reduce(operator.mul, [vikings.conditional_probs[pair]
                                       for pair in alignment])
                 for alignment in sentence_alignments
             }
 
-            for i, sentence_alignments in enumerate(alignments)
+            for i, sentence_alignments in enumerate(vikings.alignments)
         }
 
         # Normalize alignment probabilities
         for sentence_idx, sentence_alignments in alignment_probs.items():
             total = float(sum(sentence_alignments.values()))
             probs = {alignment: value / total
-                     for alignment, value in sentence_alignments.items()}
+                        for alignment, value in sentence_alignments.items()}
             alignment_probs[sentence_idx] = probs
 
         # Now join all alignments and begin the maximization step: group
@@ -285,13 +288,19 @@ def em_run(sentences_e, sentences_f):
             for source_word, score in translations.items():
                 conditional_probs[source_word, target_word] = score / total
 
-    return conditional_probs
+
+    def run(vikings):
+        while vikings.conditional_probs_old != vikings.conditional_probs:
+            vikings.conditional_probs_old = copy.copy(vikings.conditional_probs)
+            vikings.em_iter()
+        return vikings.conditional_probs
 
 
 def main():
     sen_e = ['my green house'.split(), 'green house'.split(), 'the house'.split()]
     sen_f = ['mi casa verde'.split(), 'casa verde'.split(), 'la casa'.split()]
-    print(em_run(sen_e, sen_f))
+    ibm = IBM1(sen_e, sen_f)
+    print(ibm.run())
 
 
 if __name__ == "__main__":
