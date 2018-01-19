@@ -172,15 +172,17 @@ class IBM1:
                               for f, e in zip(sentences_f, sentences_e)]
 
 
-    def run(vikings):
+    def train(vikings):
+        '''Returns a mapping `(word_f, word_e) => p` where p is $P(t1|t2)$.
+        '''
         while vikings.conditional_probs_old != vikings.conditional_probs:
             vikings.conditional_probs_old = copy.copy(vikings.conditional_probs)
-            vikings.em_iter()
+            vikings._em_iter()
         return vikings.conditional_probs
 
 
-    def em_iter(vikings):
-        '''Do a single iteration of the EM algorithm.'''
+    def _em_iter(vikings):
+        '''Perform a single iteration of the EM algorithm.'''
         alignment_probs = {
             i: {
                 tuple(alignment):
@@ -192,7 +194,7 @@ class IBM1:
             for i, sentence_alignments in enumerate(vikings.alignments)
         }
 
-        # Normalize alignment probabilities
+        # Normalize alignment probabilities.
         for sentence_idx, sentence_alignments in alignment_probs.items():
             total = float(sum(sentence_alignments.values()))
             probs = {alignment: value / total
@@ -201,7 +203,7 @@ class IBM1:
 
         # Now join all alignments and begin the maximization step: group
         # by target-language word and collect corresponding
-        # source-language probabilities
+        # source-language probabilities.
         word_translations = defaultdict(lambda: defaultdict(float))
         for sentence_alignments in alignment_probs.values():
             for word_pairs, prob in sentence_alignments.items():
@@ -210,7 +212,7 @@ class IBM1:
 
         # Now calculate new conditional probability mapping, ungrouping
         # the `word_translations` tree and normalizing values into
-        # conditional probabilities
+        # conditional probabilities.
         vikings.conditional_probs = {}
         for word_e, translations in word_translations.items():
             total = float(sum(translations.values()))
@@ -218,12 +220,33 @@ class IBM1:
                 vikings.conditional_probs[word_f, word_e] = score / total
 
 
+def read_corpus(path):
+    """Read a file as a list of lists of words."""
+
+    with open(path,'r') as f:
+        a = [ ln.strip().split() for ln in f ]
+        return a[:2]
+
+
+
 def main():
     sen_f = ['mi casa verde'.split(), 'casa verde'.split(), 'la casa'.split()]
     sen_e = ['my green house'.split(), 'green house'.split(), 'the house'.split()]
+    print(sen_f)
+    print(sen_e)
     ibm = IBM1(sen_f, sen_e)
-    print(ibm.run())
+    print(ibm.train())
+
+
+def main2():
+    corpus_path = '../data/hansards'
+    corpus_f = read_corpus(corpus_path + '.f')
+    corpus_e = read_corpus(corpus_path + '.e')
+    print(corpus_f)
+    print(corpus_e)
+    ibm = IBM1(corpus_f, corpus_e)
+    print(ibm.train())
 
 
 if __name__ == "__main__":
-    main()
+    main2()
