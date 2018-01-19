@@ -153,23 +153,23 @@ import operator
 
 
 class IBM1:
-    def __init__(vikings, sentences_e, sentences_f):
-        vikings.sentences_e = sentences_e
+    def __init__(vikings, sentences_f, sentences_e):
         vikings.sentences_f = sentences_f
+        vikings.sentences_e = sentences_e
 
-        vocabulary_e = set(itertools.chain.from_iterable(sentences_e))
         vocabulary_f = set(itertools.chain.from_iterable(sentences_f))
+        vocabulary_e = set(itertools.chain.from_iterable(sentences_e))
 
         # Uniform initial probabilities.
-        uniform_prob = 1.0 / len(vocabulary_e)
+        uniform_prob = 1.0 / len(vocabulary_f)
         vikings.conditional_probs_old = None
-        vikings.conditional_probs = {(word_e, word_f): uniform_prob
-                                     for word_e in vocabulary_e
-                                     for word_f in vocabulary_f}
+        vikings.conditional_probs = {(word_f, word_e): uniform_prob
+                                     for word_f in vocabulary_f
+                                     for word_e in vocabulary_e}
 
-        vikings.alignments = [[list(zip(e, perm_f))
-                               for perm_f in itertools.permutations(f)]
-                              for e, f in zip(sentences_e, sentences_f)]
+        vikings.alignments = [[list(zip(f, perm_e))
+                               for perm_e in itertools.permutations(e)]
+                              for f, e in zip(sentences_f, sentences_e)]
 
 
     def run(vikings):
@@ -205,22 +205,22 @@ class IBM1:
         word_translations = defaultdict(lambda: defaultdict(float))
         for sentence_alignments in alignment_probs.values():
             for word_pairs, prob in sentence_alignments.items():
-                for word_e, word_f in word_pairs:
-                    word_translations[word_f][word_e] += prob
+                for word_f, word_e in word_pairs:
+                    word_translations[word_e][word_f] += prob
 
         # Now calculate new conditional probability mapping, ungrouping
         # the `word_translations` tree and normalizing values into
         # conditional probabilities
         conditional_probs = {}
-        for word_f, translations in word_translations.items():
+        for word_e, translations in word_translations.items():
             total = float(sum(translations.values()))
-            for word_e, score in translations.items():
-                conditional_probs[word_e, word_f] = score / total
+            for word_f, score in translations.items():
+                conditional_probs[word_f, word_e] = score / total
 
 
 def main():
-    sen_e = ['my green house'.split(), 'green house'.split(), 'the house'.split()]
     sen_f = ['mi casa verde'.split(), 'casa verde'.split(), 'la casa'.split()]
+    sen_e = ['my green house'.split(), 'green house'.split(), 'the house'.split()]
     ibm = IBM1(sen_f, sen_e)
     print(ibm.run())
 
