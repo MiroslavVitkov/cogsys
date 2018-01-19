@@ -211,11 +211,11 @@ class IBM1:
         # Now calculate new conditional probability mapping, ungrouping
         # the `word_translations` tree and normalizing values into
         # conditional probabilities
-        conditional_probs = {}
+        vikings.conditional_probs = {}
         for word_e, translations in word_translations.items():
             total = float(sum(translations.values()))
             for word_f, score in translations.items():
-                conditional_probs[word_f, word_e] = score / total
+                vikings.conditional_probs[word_f, word_e] = score / total
 
 
 def main():
