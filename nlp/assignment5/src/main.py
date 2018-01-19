@@ -15,7 +15,7 @@ import math
 
 
 
-from collections import defatultdict
+from collections import defaultdict
 from itertools import product
 
 class IBM1:
@@ -23,7 +23,7 @@ class IBM1:
     def __init__(self, corpus):
         '''corpus - list(english_sentence, foreign_sentence)'''
 
-        self.probs = dict()
+        self.probs = defaultdict(defaultdict(lambda: 0))
 
         # Compute all possible alignments.
         aligns = defaultdict(set)
@@ -33,15 +33,21 @@ class IBM1:
                 aligns[e_word].add(f_word)
 
         # Compute uniform initial probabilities for each alignment.
-        uniform_dist = lambda n: [1 / float(n)] * n
-        for e_word, f_word_set in alignes.iteritems():
-            prob = uniform_dist(len(f_word_set))
+        for e_word, f_word_set in alignes.items():
+            prob = 1/len(f_word_set)
             for f_word in f_word_set:
-                self.probs[(e_word, f_word)] = prob
+                self.probs[e_word][f_word] = prob
 
 
-    def em_iter(self, corpus, passnum=1):
-        """Run a single iteration of the EM algorithm on the model"""
+    def em_iter():
+        '''Run a single iteration of the EM algorithm on the model'''
+        # E-Step
+        for e, f in corpus:
+            e = (None,) + e
+
+
+    def em_iter2(self, corpus, passnum=1):
+        '''Run a single iteration of the EM algorithm on the model'''
         likelihood = 0.0
         c1 = defaultdict(float) # ei aligned with fj
         c2 = defaultdict(float) # ei aligned with anything
@@ -69,22 +75,15 @@ class IBM1:
         # The M-Step
         self.t = defaultdict(float, {
             k: (v + self.param.n) / (c2[k[1:]] + (self.param.n * self.param.v))
-            for k, v in c1.iteritems() if v > 0.0 })
+            for k, v in c1.items() if v > 0.0 })
 
         return likelihood
-
-
-    def em_train(self, corpus, n=10, s=1):
-        """Run several iterations of the EM algorithm on the model"""
-
-        for k in range(s, n + s):
-            self.em_iter(corpus, passnum=k)
 
 
     def viterbi_alignment(self, f, e):
         """Returns an alignment from the provided french sentence to the english sentence"""
 
-        e = IBM.nones(self.param.q0) + e
+        e = (None,) + e
         l = len(e)
         m = len(f) + 1
 
@@ -219,8 +218,99 @@ def main2():
     run(corpus, ibm, lambda: ibm.uniform(corpus), path.join(data_path, 'model', 'ibm1', 'uniform'), corpus_name, 20)
 
 
+#!/usr/bin/env python
+"""An implementation of the IBM Model 1 expectation-maximization
+algorithm for learning word alignments.
+"""
+
+from collections import defaultdict
+import copy
+import itertools
+import operator
+
+from functools import reduce
+def em_run(sentence_pairs):
+    """Run expectation-maximization on a list of pairs of the form
+
+        `(source_tokens, target_tokens)`
+
+    where `source_tokens` is a list of tokens in the source language and
+    `target_tokens` is a list of tokens for a translationally equivalent
+    sentence in the target language.
+
+    Returns a mapping `(t1, t2) => p` where `t1` is a source-language
+    token, `t2` is a target-language token, and the value `p` represents
+    $P(t1|t2)$.
+    """
+
+    source_sentences, target_sentences = zip(*sentence_pairs)
+    source_vocabulary = set(itertools.chain.from_iterable(source_sentences))
+    target_vocabulary = set(itertools.chain.from_iterable(target_sentences))
+
+    # Value with which to initialize each conditional probability
+    uniform_prob = 1.0 / len(source_vocabulary)
+
+    conditional_probs_old = None
+    conditional_probs = {(source_w, target_w): uniform_prob
+                         for source_w in source_vocabulary
+                         for target_w in target_vocabulary}
+
+    alignments = [[list(zip(source, target_perm))
+                   for target_perm in itertools.permutations(target)]
+                  for source, target in sentence_pairs]
+
+    # Repeat until convergence
+    i = 0
+    while conditional_probs_old != conditional_probs:
+        conditional_probs_old = copy.copy(conditional_probs)
+
+        alignment_probs = {
+            i: {
+                tuple(alignment):
+                reduce(operator.mul, [conditional_probs[pair]
+                                      for pair in alignment])
+                for alignment in sentence_alignments
+            }
+
+            for i, sentence_alignments in enumerate(alignments)
+        }
+
+        # Normalize alignment probabilities
+        for sentence_idx, sentence_alignments in alignment_probs.items():
+            total = float(sum(sentence_alignments.values()))
+            probs = {alignment: value / total
+                     for alignment, value in sentence_alignments.items()}
+            alignment_probs[sentence_idx] = probs
+
+        # Now join all alignments and begin the maximization step: group
+        # by target-language word and collect corresponding
+        # source-language probabilities
+        word_translations = defaultdict(lambda: defaultdict(float))
+        for sentence_alignments in alignment_probs.values():
+            for word_pairs, prob in sentence_alignments.items():
+                for source_word, target_word in word_pairs:
+                    word_translations[target_word][source_word] += prob
+
+        # Now calculate new conditional probability mapping, ungrouping
+        # the `word_translations` tree and normalizing values into
+        # conditional probabilities
+        conditional_probs = {}
+        for target_word, translations in word_translations.items():
+            total = float(sum(translations.values()))
+            for source_word, score in translations.items():
+                conditional_probs[source_word, target_word] = score / total
+
+    return conditional_probs
+
+
 def main():
-    print("kur")
+    SENTENCES = [
+        ('mi casa verde'.split(), 'my green house'.split()),
+        ('casa verde'.split(), 'green house'.split()),
+        ('la casa'.split(), 'the house'.split()),
+    ]
+
+    print (em_run(SENTENCES))
 
 
 if __name__ == "__main__":
