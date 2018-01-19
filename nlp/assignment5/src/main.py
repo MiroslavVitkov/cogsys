@@ -229,35 +229,20 @@ import itertools
 import operator
 
 from functools import reduce
-def em_run(sentence_pairs):
-    """Run expectation-maximization on a list of pairs of the form
+def em_run(sentences_e, sentences_f):
+    vocabulary_e = set(itertools.chain.from_iterable(sentences_e))
+    vocabulary_f = set(itertools.chain.from_iterable(sentences_f))
 
-        `(source_tokens, target_tokens)`
-
-    where `source_tokens` is a list of tokens in the source language and
-    `target_tokens` is a list of tokens for a translationally equivalent
-    sentence in the target language.
-
-    Returns a mapping `(t1, t2) => p` where `t1` is a source-language
-    token, `t2` is a target-language token, and the value `p` represents
-    $P(t1|t2)$.
-    """
-
-    source_sentences, target_sentences = zip(*sentence_pairs)
-    source_vocabulary = set(itertools.chain.from_iterable(source_sentences))
-    target_vocabulary = set(itertools.chain.from_iterable(target_sentences))
-
-    # Value with which to initialize each conditional probability
-    uniform_prob = 1.0 / len(source_vocabulary)
-
+    # Uniform initial probabilities.
+    uniform_prob = 1.0 / len(vocabulary_e)
     conditional_probs_old = None
-    conditional_probs = {(source_w, target_w): uniform_prob
-                         for source_w in source_vocabulary
-                         for target_w in target_vocabulary}
+    conditional_probs = {(word_e, word_f): uniform_prob
+                         for word_e in vocabulary_e
+                         for word_f in vocabulary_f}
 
-    alignments = [[list(zip(source, target_perm))
-                   for target_perm in itertools.permutations(target)]
-                  for source, target in sentence_pairs]
+    alignments = [[list(zip(e, perm_f))
+                   for perm_f in itertools.permutations(f)]
+                  for e, f in zip(sentences_e, sentences_f)]
 
     # Repeat until convergence
     i = 0
@@ -304,13 +289,9 @@ def em_run(sentence_pairs):
 
 
 def main():
-    SENTENCES = [
-        ('mi casa verde'.split(), 'my green house'.split()),
-        ('casa verde'.split(), 'green house'.split()),
-        ('la casa'.split(), 'the house'.split()),
-    ]
-
-    print (em_run(SENTENCES))
+    sen_e = ['my green house'.split(), 'green house'.split(), 'the house'.split()]
+    sen_f = ['mi casa verde'.split(), 'casa verde'.split(), 'la casa'.split()]
+    print(em_run(sen_e, sen_f))
 
 
 if __name__ == "__main__":
