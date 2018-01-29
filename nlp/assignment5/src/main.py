@@ -75,8 +75,7 @@ class IBM1:
             alignment_probs[sentence_idx] = probs
 
         # Now join all alignments and begin the maximization step: group
-        # by target-language word and collect corresponding
-        # source-language probabilities.
+        # by english word and collect corresponding foreign word probabilities.
         word_translations = defaultdict(lambda: defaultdict(float))
         for sentence_alignments in alignment_probs.values():
             for word_pairs, prob in sentence_alignments.items():
