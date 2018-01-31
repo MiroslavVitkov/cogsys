@@ -1,17 +1,9 @@
 #!/usr/bin/env python3
 
 
-# Code imposed by the assignment.
-import nltk
-grammar = nltk.data.load('grammars/sample_grammars/sem2.fcfg')
-# print(grammar)
-results = nltk.sem.util.interpret_sents(['Mary chases a dog'], grammar, semkey='SEM')
-for result in results:
-    for (synrep, semrep) in result:
-        print(semrep)
-
-
+from nltk.data import load
 from nltk.grammar import FeatureGrammar
+from nltk.sem.util import interpret_sents
 
 
 def extend_grammar(g, p):
@@ -23,10 +15,17 @@ def extend_grammar(g, p):
     return ret
 
 
+def parse(g, s):
+    '''Using a grammar, produce frоm a sentence a first order logic representation.'''
+    results = interpret_sents([s], g, semkey='SEM')
+    return [semrep for r in results for (synrep, semrep) in r]
 
 
 def main():
-    print(extend_grammar(grammar, 'V -> N'))
+    grammar = load('grammars/sample_grammars/sem2.fcfg')
+    sem = parse(grammar, 'Mary chases a dog')
+    print(sem)
+    #print(extend_grammar(grammar, 'V -> N'))
 
 
 if __name__ == '__main__':
