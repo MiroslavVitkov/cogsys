@@ -26,10 +26,11 @@ def main():
 
     g = extend_grammar(g, r"N[NUM='sg', SEM=<\x.story(x)>] -> 'story'")
 
-    g = extend_grammar(g, r"TV[NUM='sg', SEM=<\X y.X(\x.tell(y,x))>, TNS='pres'] -> 'tells'")
-    g = extend_grammar(g, r"TV[NUM='pl', SEM=<\X y.X(\x.tell(y,x))>, TNS='pres'] -> 'tell'")
+    g = extend_grammar(g, r"TV[NUM='sg', SEM=<\X y.X(\x.\z.tell(y,x,z))>, TNS='pres'] -> 'tells'")
+    g = extend_grammar(g, r"TV[NUM='pl', SEM=<\X y.X(\x.\z.tell(y,x,z))>, TNS='pres'] -> 'tell'")
 
-    g = extend_grammar(g, r"VP[NUM=?n, SEM=<?v(?obj1, ?obj2)>] -> TV[NUM=?n, SEM=?v] NP[SEM=?obj1] NP[SEM=?obj2]")
+    g = extend_grammar(g,
+     r"VP[NUM=?n, SEM=<?v(?obj1, ?obj2)>] -> TV[NUM=?n, SEM=?v] NP[SEM=?obj1] NP[SEM=?obj2]")
 
     sem = parse(g, 'Mary tells Suzie a story')
     print(sem)
