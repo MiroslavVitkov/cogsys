@@ -23,7 +23,8 @@ def parse(g, s):
 
 def main():
     grammar = load('grammars/sample_grammars/sem2.fcfg')
-    sem = parse(grammar, 'Mary chases a dog')
+    grammar = extend_grammar(grammar, r"N[NUM='sg', SEM=<\x.god(x)>] -> 'god'")
+    sem = parse(grammar, 'Mary chases a god')
     print(sem)
     #print(extend_grammar(grammar, 'V -> N'))
 
