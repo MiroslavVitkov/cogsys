@@ -30,15 +30,13 @@ one.a(arts)
 # (b) Does the observed mean of the physics students fall within the 95% confidence
 # interval of the arts students?
 '1.b. mean(physics) in interval(arts)'
-one.b <- function()
+local(
 {
-    # This is not a real function; I'm defining it just to limit scope of variables.
     interval <- one.a(arts)
     m <- mean(physics)  # don't shadow mean() by declaring a variable with it's name 
 
     ifelse(m < max(interval) && m > min(interval), 'yes', 'no')  # is the interval inclusive?
-}
-one.b()
+})
 ''
 
 # (c) What could we conclude based on this result?
