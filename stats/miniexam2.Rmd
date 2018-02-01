@@ -1,0 +1,49 @@
+#!/usr/bin/env Rscript
+
+
+library(tidyverse)
+
+
+# Problem 1
+# A group of 50 arts students and a group of 50 physics students underwent IQ testing.
+# The code below generates the scores for both groups.
+set.seed(1)
+arts <- rnorm(n=50, mean=100, sd=15)
+set.seed(31)  # Douglas Adams disapproves
+physics <- rnorm(n=50, mean=100, sd=15)
+
+# (a) Calculate the 95% confidence intervals for the arts students.
+one.a <- function(sample)
+{
+    # Returns the two-sided 95% confidence interval of the observed population.
+    z = 1.96  # computed with integrals and stuff
+    SD = sqrt(15)  # usually we don't know this
+    SEM = SD / sqrt(length(sample))
+    mean = mean(sample)
+
+    c(mean + SEM*SD, mean - SEM*SD)
+}
+'1.a. 95% confidence interval'
+one.a(arts)
+''
+
+# (b) Does the observed mean of the physics students fall within the 95% confidence
+# interval of the arts students?
+'1.b. mean(physics) in interval(arts)'
+one.b <- function()
+{
+    # This is not a real function; I'm defining it just to limit scope of variables.
+    interval <- one.a(arts)
+    m <- mean(physics)  # don't shadow mean() by declaring a variable with it's name 
+
+    ifelse(m < max(interval) && m > min(interval), 'yes', 'no')  # is the interval inclusive?
+}
+one.b()
+''
+
+# (c) What could we conclude based on this result?
+'1.c. conclusion?'
+'Based on the given data we are 95% confident that'
+'the two samples are drawn from different generating distributions.'
+# Embarrassingly, we know they are not.
+''
