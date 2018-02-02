@@ -1,0 +1,21 @@
+% start S
+S[sem=<?q(?vp)>] -> Q[sem=?q] VP[sem=?vp]
+VP[sem=<?cop(?adj)>]  -> Adj[sem=?adj] CopP[sem=?cop]
+CopP[sem=<?cop(?np)>] -> Cop[sem=?cop] NP[sem=?np]
+Q[sem=<\P.answer(A,P(A))>] -> 'how'  
+Adj[sem=<\x y.size(x,y)>] -> 'big'
+Adj[sem=<\x y.len(x,y)>] -> 'long'
+Cop[sem=<\P Q x. (Q(B,x) & P(B))>] -> 'is'
+NP[sem=<\x.const(x,stateid(california))>] -> 'california'
+NP[sem=<\x.const(x,stateid(new+mexico))>] -> 'new+mexico'
+NP[sem=<?gr>] -> RIO GRANDE[sem=?gr]
+RIO -> 'rio'
+GRANDE[sem=<\x.const(x,riverid(riogrande))>] -> 'grande'
+NP[sem=<?det(?n)>] -> Det[sem=?det] N[sem=?n]
+N[sem=<\x. ?a(x, ?n(x))>] -> Adj[form=sup,sem=?a] N[sem=?n]
+N[sem=<\x. (?n(x) & ?p(x))>] -> N[sem=?n] PP[sem=?p]
+PP[sem=<?p(?np)>] -> P[sem=?p] NP[sem=?np]
+Det[sem=<\P x.P(x)>] -> 'the'
+Adj[form=sup,sem=<longest>] -> 'longest'
+N[sem=<\x.river(x)>] -> 'river'
+P[sem=<\P y. (loc(y,C) & P(C))>] -> 'in'
