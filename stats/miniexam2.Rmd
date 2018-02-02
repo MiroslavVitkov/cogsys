@@ -59,9 +59,8 @@ tibble(iq=rnorm(n*100, 100, 15), expt=rep(1:100, each=n)) %>%
     summarize(m = mean(iq), sdev = sd(iq), stderr = sdev /sqrt(n())) -> results
 
 # a. Plot confidence intervals to see significant observations.
-#ggplot(data = , mapping = aes()) + geom_point() + ggtitle('100 simulated IQ experiment with N=50')
-
 # Graph is saved as './Rplots.pdf'.
+'2.a. Plot the means and intervals.'
 results <- mutate(results, lower = m - stderr*Z95, upper = m + stderr*Z95)
 ggplot(data=results, mapping=aes(x=expt, y=m)) +
     ggtitle('100 simulated IQ experiment with N=50') +
@@ -70,3 +69,19 @@ ggplot(data=results, mapping=aes(x=expt, y=m)) +
     geom_point() +
     geom_errorbar(mapping=aes(ymin=lower, ymax=upper)) +
     geom_hline(yintercept=100, colour="red")
+
+# b. What part of the intervals contain the true mean?
+'2.b. What % of results contain the true mean?'
+local(
+{
+    m = 100  # true mean
+    count = length(results$lower[results$lower>=m]) +
+            length(results$upper[results$upper<=m])
+    fraction = count / length(results$expt)
+
+    fraction * 100
+
+})
+''
+
+# c. 
