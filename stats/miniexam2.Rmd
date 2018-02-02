@@ -23,9 +23,9 @@ one.a <- function(sample)
     # Returns the two-sided 95% confidence interval of the observed population.
     SD = sqrt(15)  # usually we don't know this
     SEM = SD / sqrt(length(sample))
-    mean = mean(sample)
+    m = mean(sample)  # don't shadow mean() by declaring a variable with it's name
 
-    c(mean + SEM*Z95, mean - SEM*Z95)
+    c(m + SEM*Z95, m - SEM*Z95)
 }
 '1.a. 95% confidence interval'
 one.a(arts)
