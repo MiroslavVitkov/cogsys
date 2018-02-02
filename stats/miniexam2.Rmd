@@ -37,15 +37,36 @@ one.a(arts)
 local(
 {
     interval <- one.a(arts)
-    m <- mean(physics)  # don't shadow mean() by declaring a variable with it's name 
+    m <- mean(physics)
 
     ifelse(m < max(interval) && m > min(interval), 'yes', 'no')  # is the interval inclusive?
 })
 ''
 
-# (c) What could we conclude based on this result?
+# c. What could we conclude based on this result?
 '1.c. conclusion?'
 'Based on the given data we are 95% confident that'
 'the two samples are drawn from different generating distributions.'
 # Embarrassingly, we know they are not.
 ''
+
+
+# Problem 2
+set.seed(31)
+n <- 50
+tibble(iq=rnorm(n*100, 100, 15), expt=rep(1:100, each=n)) %>%
+    group_by(expt) %>%
+    summarize(m = mean(iq), sdev = sd(iq), stderr = sdev /sqrt(n())) -> results
+
+# a. Plot confidence intervals to see significant observations.
+#ggplot(data = , mapping = aes()) + geom_point() + ggtitle('100 simulated IQ experiment with N=50')
+
+# Graph is saved as './Rplots.pdf'.
+results <- mutate(results, lower = m - stderr*Z95, upper = m + stderr*Z95)
+ggplot(data=results, mapping=aes(x=expt, y=m)) +
+    ggtitle('100 simulated IQ experiment with N=50') +
+    xlab('Experiment') +
+    ylab('Mean IQ') +
+    geom_point() +
+    geom_errorbar(mapping=aes(ymin=lower, ymax=upper)) +
+    geom_hline(yintercept=100, colour="red")
