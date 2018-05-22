@@ -1,6 +1,57 @@
 #!/usr/bin/env Rscript
 
-library(knitr)
-pandoc('hw_ch4.rmd', format = 'latex')
 
-"Text"
+library(knitr)
+pandoc('hw_ch4.rmd', format='latex')
+
+
+# TODO: how to NOT print the above commands to the resulting .pdf?
+# TODO: how to avoid putting everyting from here on in ""s?
+# TODO: how to avoid mentioning the file name above?
+# TODO: how to render special symbols, such as tilde, miu, sigma?
+#     Unicode character (U+3BC) not set up for use with LaTeX.
+#     See the inputenc package documentation for explanation.
+
+# nano hw_ch4.rmd  && ./hw_ch4.rmd && evince hw_ch4.pdf
+
+"
+4E1. In the model definition below, which line is the likelihood?
+A: y_i is the likelihood, based on the expectation and deviation.
+
+
+4E2. In the model definition just above, how many parameters are in the posterior distribution?
+A: Two parameters, zero predictor variables.
+
+
+4E3. Using the model definition above, write down the appropriate form of Bayes’ theorem that
+includes the proper likelihood and priors.
+A: P(miu, sigma | data) = P(data | miu, sigma) * P(p) / P(miu, sigma)
+Numerator is summed over data point indices.
+Denominator is summed once for every of the two parameters in the joint distribution.
+
+
+4E4. In the model definition below, which line is the linear model?
+A: miu_i = alpha + beta_i ... an affine model really
+
+
+4E5. In the model definition just above, how many parameters are in the posterior distribution?
+A: We have one predictor variable.
+We have 3 parameters, because this is the count of numbers we have to teach the model.
+
+
+4M1. For the model definition below, simulate observed heights from the prior (not the posterior).
+A:
+```{r}
+points <- 10
+rnorm(points, mean=rnorm(points, 0, 10), sd=runif(points, 0, 10))
+```
+4M3. Translate the map model formula below into a mathematical model definition.
+A:
+```{r}
+flist <- alist(
+y tilda dnorm( mu , sigma ),
+miu tilda dnorm( 0 , 10 ),
+sigma tilda dunif( 0 , 10 )
+)
+```
+"
