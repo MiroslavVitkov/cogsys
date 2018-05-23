@@ -1,8 +1,23 @@
 #!/usr/bin/env Rscript
 
+library(rmarkdown)
+render("hw.rmd", "pdf_document")
 
-library(knitr)
-pandoc('hw.rmd', format='latex')
+<!---
+#library(knitr)
+# TODO: YAML metadata removes the need for format
+#pandoc('hw.rmd', format='latex', clean=TRUE, encoding=utf8, run_pandoc=TRUE)
+# run_pandoc()
+
+#     output:
+#       pdf_document:
+#         toc: true
+#         highlight: zenburn
+#       html_document:
+#         toc: true
+#         theme: united
+
+# TODO: germaneca
 
 
 # TODO: how to NOT print the above commands to the resulting .pdf?
@@ -11,8 +26,9 @@ pandoc('hw.rmd', format='latex')
 # TODO: how to render special symbols, such as tilde, miu, sigma?
 #     Unicode character (U+3BC) not set up for use with LaTeX.
 #     See the inputenc package documentation for explanation.
+-->
 
-# nano hw_ch4.rmd  && ./hw_ch4.rmd && evince hw_ch4.pdf
+[comment]: <> (nano hw.rmd  && ./hw.rmd && evince hw.pdf)
 
 "
 4E1. In the model definition below, which line is the likelihood?
@@ -49,9 +65,9 @@ rnorm(points, mean=rnorm(points, 0, 10), sd=runif(points, 0, 10))
 A:
 ```{r}
 flist <- alist(
-y tilda dnorm( mu , sigma ),
-miu tilda dnorm( 0 , 10 ),
-sigma tilda dunif( 0 , 10 )
+y ~ dnorm( mu , sigma ),
+miu ~ dnorm( 0 , 10 ),
+sigma ~ dunif( 0 , 10 )
 )
 ```
 "
