@@ -22,7 +22,8 @@ def parse(g, s):
 
 
 def main():
-    g = load('grammars/sample_grammars/sem2.fcfg')
+#    g = load('grammars/sample_grammars/sem2.fcfg')
+    g = load('sem2.fcfg')
 
     g = extend_grammar(g, r"N[NUM='sg', SEM=<\x.story(x)>] -> 'story'")
 
@@ -32,7 +33,7 @@ def main():
     g = extend_grammar(g,
      r"VP[NUM=?n, SEM=<?v(?obj1, ?obj2)>] -> TV[NUM=?n, SEM=?v] NP[SEM=?obj1] NP[SEM=?obj2]")
 
-    sem = parse(g, 'Mary tells Suzie a story')
+    sem = parse(g, 'Fido barks')
     print(sem)
 
 

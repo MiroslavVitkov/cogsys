@@ -1,5 +1,6 @@
 % start S
 S[sem=<?q(?vp)>] -> Q[sem=?q] VP[sem=?vp]
+S[sem=<?q(?vp)>] -> Q[sem=?q] VP[sem=?vp] Punct[]
 VP[sem=<?cop(?adj)>]  -> Adj[sem=?adj] CopP[sem=?cop]
 CopP[sem=<?cop(?np)>] -> Cop[sem=?cop] NP[sem=?np]
 Q[sem=<\P.answer(A,P(A))>] -> 'how'  
@@ -19,3 +20,14 @@ Det[sem=<\P x.P(x)>] -> 'the'
 Adj[form=sup,sem=<longest>] -> 'longest'
 N[sem=<\x.river(x)>] -> 'river'
 P[sem=<\P y. (loc(y,C) & P(C))>] -> 'in'
+
+NP[sem=<\x.const(x,stateid(alaska))>] -> 'alaska'
+Punct[sem=<\x.punct(x)>] -> '?'
+
+
+NP[sem=<?det(?n)>] -> Det[sem=?det] N[sem=?n] N[]
+N[sem=<\x.const(x,riverid(mississippi))>] -> 'mississippi'
+
+Adj[sem=<\x.height(x)>] -> 'tall'
+N[sem=<\x.mount(x)>] -> 'mount'
+N[sem=<\x.const(x,placeid(mckinley))>] -> 'mckinley'
