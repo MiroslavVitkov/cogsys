@@ -1,10 +1,12 @@
 #!/usr/bin/env Rscript
 
 
+#<!---
 library(rmarkdown)
-render("hw.rmd", "pdf_document", run_pandoc=TRUE, encoding="UTF-8")  #  All those parameters are not needed.
+render("hw.rmd", output_format="pdf_document")
 stopifnot(FALSE)  # Stop trying to interpret the rest of the file as valid R.
-                  # Using this instead of `stop()` for the more obvious error message.
+#-->
+
 
 ---
 title: "Multivariate Linear Models"
@@ -17,12 +19,13 @@ output:
 
 
 <!---
-TODO: how to NOT print the above commands to the resulting .pdf?
 TODO: how to avoid putting everyting from here on in ""s?
 TODO: how to avoid mentioning the file name above?
+TODO: output format "all" doesn't read the YAML header
 
 nano hw.rmd  && ./hw.rmd && evince hw.pdf)
 -->
+
 
 "  
 5E1.  
