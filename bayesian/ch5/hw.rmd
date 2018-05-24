@@ -11,7 +11,7 @@ stopifnot(FALSE)  # Stop trying to interpret the rest of the file as valid R.
 ---
 title: "Multivariate Linear Models"
 author: Miroslav Vitkov
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+date: "compiled on: `r format(Sys.time(), '%d %B, %Y')`"
 output:
   pdf_document:
     toc: true
@@ -19,7 +19,6 @@ output:
 
 
 <!---
-TODO: how to avoid putting everyting from here on in ""s?
 TODO: how to avoid mentioning the file name above?
 TODO: output format "all" doesn't read the YAML header
 
@@ -27,7 +26,6 @@ nano hw.rmd  && ./hw.rmd && evince hw.pdf)
 -->
 
 
-"  
 5E1.  
 Which of the linear models below are multiple linear regressions?  
 (1) $\mu[i] = \alpha + \beta x[i]$  
@@ -57,4 +55,3 @@ miu ~ dnorm( 0 , 10 ),
 sigma ~ dunif( 0 , 10 )
 )
 ```
-"
