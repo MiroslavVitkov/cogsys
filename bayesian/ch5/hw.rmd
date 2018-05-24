@@ -3,7 +3,9 @@
 
 #<!---
 library(rmarkdown)
-render("hw.rmd", output_format="pdf_document")
+argv <- commandArgs(trailingOnly=FALSE)
+fname <- sub("--file=", "", argv[grep("--file=", argv)])
+render(fname, output_format="pdf_document")
 stopifnot(FALSE)  # Stop trying to interpret the rest of the file as valid R.
 #-->
 
@@ -19,7 +21,6 @@ output:
 
 
 <!---
-TODO: how to avoid mentioning the file name above?
 TODO: output format "all" doesn't read the YAML header
 
 nano hw.rmd  && ./hw.rmd && evince hw.pdf)
