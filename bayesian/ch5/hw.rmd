@@ -1,14 +1,18 @@
 #!/usr/bin/env Rscript
 
 library(rmarkdown)
-render("hw.rmd", "pdf_document")
+render("hw.rmd", "pdf_document", run_pandoc=TRUE, encoding="UTF-8")
 
-<!---
-#library(knitr)
-# TODO: YAML metadata removes the need for format
-#pandoc('hw.rmd', format='latex', clean=TRUE, encoding=utf8, run_pandoc=TRUE)
-# run_pandoc()
+---
+title: "Multivariate Linear Models"
+author: Miroslav Vitkov
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  pdf_document:
+    toc: true
+---
 
+#<!---
 #     output:
 #       pdf_document:
 #         toc: true
@@ -17,8 +21,6 @@ render("hw.rmd", "pdf_document")
 #         toc: true
 #         theme: united
 
-# TODO: germaneca
-
 
 # TODO: how to NOT print the above commands to the resulting .pdf?
 # TODO: how to avoid putting everyting from here on in ""s?
@@ -26,48 +28,29 @@ render("hw.rmd", "pdf_document")
 # TODO: how to render special symbols, such as tilde, miu, sigma?
 #     Unicode character (U+3BC) not set up for use with LaTeX.
 #     See the inputenc package documentation for explanation.
--->
+#-->
 
-[comment]: <> (nano hw.rmd  && ./hw.rmd && evince hw.pdf)
+#<!---[comment]: <> (nano hw.rmd  && ./hw.rmd && evince hw.pdf)-->
 
-"
-4E1. In the model definition below, which line is the likelihood?
-A: y_i is the likelihood, based on the expectation and deviation.
+#<!---
+#"
+#5E1. Which of the linear models below are multiple linear regressions?
+#(1) μ_i = α + β_x,i
+#(2) μ_i = β_x x_i + β_z z_i
+#(3) μ_i = α + β(x_i − z_i)
+#(4) μ_i = α + β_x x_i + β_z z_i
+#"
+#-->
 
+#<!---
+#"
+#---
+#title: "Sample Document"
+#output:
+#  pdf_document
+#date: "`r format(Sys.time(), '%d %B, %Y')`"
+#author: baptiste
+#---
 
-4E2. In the model definition just above, how many parameters are in the posterior distribution?
-A: Two parameters, zero predictor variables.
-
-
-4E3. Using the model definition above, write down the appropriate form of Bayes’ theorem that
-includes the proper likelihood and priors.
-A: P(miu, sigma | data) = P(data | miu, sigma) * P(p) / P(miu, sigma)
-Numerator is summed over data point indices.
-Denominator is summed once for every of the two parameters in the joint distribution.
-
-
-4E4. In the model definition below, which line is the linear model?
-A: miu_i = alpha + beta_i ... an affine model really
-
-
-4E5. In the model definition just above, how many parameters are in the posterior distribution?
-A: We have one predictor variable.
-We have 3 parameters, because this is the count of numbers we have to teach the model.
-
-
-4M1. For the model definition below, simulate observed heights from the prior (not the posterior).
-A:
-```{r}
-points <- 10
-rnorm(points, mean=rnorm(points, 0, 10), sd=runif(points, 0, 10))
-```
-4M3. Translate the map model formula below into a mathematical model definition.
-A:
-```{r}
-flist <- alist(
-y ~ dnorm( mu , sigma ),
-miu ~ dnorm( 0 , 10 ),
-sigma ~ dunif( 0 , 10 )
-)
-```
-"
+#"
+#-->
