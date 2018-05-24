@@ -20,32 +20,22 @@ output:
 TODO: how to NOT print the above commands to the resulting .pdf?
 TODO: how to avoid putting everyting from here on in ""s?
 TODO: how to avoid mentioning the file name above?
-TODO: how to render special symbols, such as tilde, miu, sigma?
-    Unicode character (U+3BC) not set up for use with LaTeX.
-    See the inputenc package documentation for explanation.
-
 
 nano hw.rmd  && ./hw.rmd && evince hw.pdf)
-
-
-"
-5E1. Which of the linear models below are multiple linear regressions?
-(1) μ_i = α + β_x,i
-(2) μ_i = β_x x_i + β_z z_i
-(3) μ_i = α + β(x_i − z_i)
-(4) μ_i = α + β_x x_i + β_z z_i
-"
 -->
 
 "  
-5E1  
+5E1.  
+Which of the linear models below are multiple linear regressions?  
+(1) $\mu[i] = \alpha + \beta x[i]$  
+(2) $\mu[i] = \beta[x] x[i] + \beta[z] z[i]$  
+(3) $\mu[i] = \alpha + \beta (x[i] - z[i]$  
+(4) $\mu[i] = \alpha + \beta[x] x[i] + \beta[z] z[i]$  
+A:  
 (1) - no, only a single predictor  
 (2) - yes, intercept == 0  
 (3) - yes, bx == bz  
 (4) - yes  
-"
-
-"
 
 # Style improved compared to last week:  
 
