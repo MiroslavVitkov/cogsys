@@ -1,0 +1,17 @@
+#!/usr/bin/env Rscript
+
+
+#<!---
+library(rmarkdown)
+argv <- commandArgs(trailingOnly=FALSE)
+fname <- sub("--file=", "", argv[grep("--file=", argv)])
+render(fname, output_format="pdf_document")
+stopifnot(FALSE)  # Stop trying to interpret the rest of the file as valid R.
+#-->
+
+
+---
+title: "Overfitting, Regularization, and Information Criteria"
+author: Miroslav Vitkov
+date: "compiled on: `r format(Sys.time(), '%d %B, %Y')`"
+---
