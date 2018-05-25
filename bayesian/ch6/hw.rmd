@@ -15,3 +15,108 @@ title: "Overfitting, Regularization, and Information Criteria"
 author: Miroslav Vitkov
 date: "compiled on: `r format(Sys.time(), '%d %B, %Y')`"
 ---
+
+
+6E1. State the three motivating criteria that define information entropy.
+Try to express each in your own words.  
+A:  
+
+
+6E2. Suppose a coin is weighted such that, when it is tossed and lands on a table, it comes up heads 70% of the time.
+What is the entropy of this coin?  
+A:
+
+
+6E3. Suppose a four-sided die is loaded such that, when tossed onto a table, it shows “1” 20%, “2” 25%, ”3” 25%, and ”4” 30% of the time.
+What is the entropy of this die?  
+A:
+
+
+6E4. Suppose another four-sided die is loaded such that it never shows “4”.
+The other three sides show equally often.
+What is the entropy of this die?  
+A:
+
+
+6M1. Write down and compare the definitions of AIC, DIC, and WAIC.
+Which of these criteria is most general?
+Which assumptions are required to transform a more general criterion into a less general one?  
+A:
+
+
+6M2. Explain the difference between model selection and model averaging.
+What information is lost under model selection?
+What information is lost under model averaging?  
+A:
+
+
+6M3. When comparing models with an information criterion, why must all models be fit to exactly the same observations?
+What would happen to the information criterion values, if the models were fit to different numbers of observations?
+Perform some experiments, if you are not sure.  
+A:
+
+
+6M4. What happens to the effective number of parameters, as measured by DIC or WAIC, as a prior becomes more concentrated?
+Why?
+Perform some experiments, if you are not sure.  
+A:
+
+
+6M5. Provide an informal explanation of why informative priors reduce overfitting.  
+A:
+
+
+6M6. Provide an information explanation of why overly informative priors result in underfitting.  
+A:
+
+
+6H1. Compare the models above, using WAIC.
+Compare the model rankings, as well as the WAIC weights.  
+A:
+
+
+6H2. For each model, produce a plot with model averaged mean and 97% confidence interval of the mean, superimposed on the raw data.
+How do predictions differ across models?  
+A:
+
+
+6H3. Now also plot the model averaged predictions, across all models.
+In what ways do the averaged predictions differ from the predictions of the model with the lowest WAIC value?  
+A:
+
+
+6H4. Compute the test-sample deviance for each model.
+This means calculating deviance, but using the data in d2 now.
+You can compute the log-likelihood of the height data with:
+```{r eval = FALSE}
+sum( dnorm( d2$height , mu , sigma , log=TRUE ) )
+```
+where mu is a vector of predicted means (based upon age values and MAP parameters) and sigma is the MAP standard deviation.  
+A:
+
+
+6H5. Compare the deviances from 6H4 to the WAIC values.
+It might be easier to compare if you subtract the smallest value in each list from the others.
+For example, subtract the minimum WAIC from all of the WAIC values so that the best WAIC is normalized to zero.
+Which model makes the best out-of-sample predictions in this case?
+Does WAIC do a good job of estimating the test deviance?  
+A:
+
+
+6H6. Consider the following model:
+$$h_i \sim Normal(\mu_i , \sigma)$$
+$$\mu_i = \alpha + \beta_1 x_i + \beta_2 x_i^2 + \beta_3 x_i^3 + \beta_4 x_i^4 + \beta_5 x_i^5 + \beta_6 x_i^6$$
+$$\beta_1 \sim Normal(0, 5)$$
+$$\beta_2 \sim Normal(0, 5)$$
+$$\beta_3 \sim Normal(0, 5)$$
+$$\beta_4 \sim Normal(0, 5)$$
+$$\beta_5 \sim Normal(0, 5)$$
+$$\beta_6 \sim Normal(0, 5)$$
+and assume flat (or nearly flat) priors on $\alpha$ and $\sigma$.
+This model contains more strongly regularizing priors on the coefficients.
+First, fit this model to the data in d1.
+Report the MAP estimates and plot the implied predictions.
+Then compute the out-of-sample deviance using the data in d2, using MAP estimates from the model fit to d1 only.
+How does this model, using regularizing priors, compare to the best WAIC model from earlier?
+How do you interpret this result?  
+A:
