@@ -13,7 +13,7 @@ stopifnot(FALSE)  # Stop trying to interpret the rest of the file as valid R.
 ---
 title: "Overfitting, Regularization, and Information Criteria"
 author: Miroslav Vitkov
-date: "compiled on: `r format(Sys.time(), '%d %B, %Y')`"
+date: "compiled on: `r Sys.time()`"
 ---
 
 
@@ -71,7 +71,23 @@ H(c(1/3, 1/3, 1/3, 0))
 6M1. Write down and compare the definitions of AIC, DIC, and WAIC.
 Which of these criteria is most general?
 Which assumptions are required to transform a more general criterion into a less general one?  
-A:
+A:  
+${AIC} = D_{train} + 2p$, where  
+$D_{train} = -2 \sum log(q_i)$ - in sample variance  
+$p$ - number of parameters to be estimated by the model
+\par
+${DIC} = 2 \bar{D} + \hat{D}$, where  
+$\bar{D} = \sum p_i D_i$ - expectation for D  
+$\hat{D} = D(\bar{\theta})$ - deviance at expected values of model parameters
+\par
+$WAIC = -2({lppd} - p_{WAIC})$  
+${lppd} = \sum {log}(Pr(y_i))$ - log pointwise predictive density  
+$Pr(y_i) - average (over parameter values) likelyhood of $i$-th datapoint$  
+$p_{WAIC} = \sum {Var}(y_i)$ - effective number of parameters  
+\par
+WAIC + multivariate Gaussian posterior + sample size much larger than number or parameters = DIC  
+DIC + flat priors = AIC  
+\par
 
 
 6M2. Explain the difference between model selection and model averaging.
