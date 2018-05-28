@@ -93,13 +93,19 @@ DIC + flat priors = AIC
 6M2. Explain the difference between model selection and model averaging.
 What information is lost under model selection?
 What information is lost under model averaging?  
-A:
+A:  
+In the former we select the model with lowest deviance.
+In the latter we use the distribution of deviance to compose model weights, which in turn help produce an ensemble prediction.
+\par
+Under model selection, the information how much was the winner better than all the rest is lost.
+Under model averaging, the prediction of every single model is lost.
 
 
 6M3. When comparing models with an information criterion, why must all models be fit to exactly the same observations?
 What would happen to the information criterion values, if the models were fit to different numbers of observations?
 Perform some experiments, if you are not sure.  
 A:
+For models fitted over more data, the deviance will be better, despite worse out of sample performance.
 
 
 6M4. What happens to the effective number of parameters, as measured by DIC or WAIC, as a prior becomes more concentrated?
@@ -110,10 +116,13 @@ A:
 
 6M5. Provide an informal explanation of why informative priors reduce overfitting.  
 A:
+Just like adding a term to a cost function, adding a non-flat prior makes the model dislike parameter values, which are "worse" than a flat prior.
 
 
 6M6. Provide an information explanation of why overly informative priors result in underfitting.  
 A:
+They do not, if the priror is spot on.
+Else, we are multiplaying observed data by prior likelyhood close to zero, resulting in close to zero values.
 
 
 6H1. Compare the models above, using WAIC.
