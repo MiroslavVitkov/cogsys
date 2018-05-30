@@ -104,7 +104,7 @@ Under model averaging, the prediction of every single model is lost.
 6M3. When comparing models with an information criterion, why must all models be fit to exactly the same observations?
 What would happen to the information criterion values, if the models were fit to different numbers of observations?
 Perform some experiments, if you are not sure.  
-A:
+A:  
 For models fitted over more data, the deviance will be better, despite worse out of sample performance.
 
 
@@ -112,32 +112,118 @@ For models fitted over more data, the deviance will be better, despite worse out
 Why?
 Perform some experiments, if you are not sure.  
 A:
+It decreases.
 
 
 6M5. Provide an informal explanation of why informative priors reduce overfitting.  
-A:
+A:  
 Just like adding a term to a cost function, adding a non-flat prior makes the model dislike parameter values, which are "worse" than a flat prior.
 
 
 6M6. Provide an information explanation of why overly informative priors result in underfitting.  
-A:
+A:  
 They do not, if the priror is spot on.
 Else, we are multiplaying observed data by prior likelyhood close to zero, resulting in close to zero values.
 
 
+Preparation for the hard section  
+```{r}
+library(tidyverse)
+
+d <- read.csv("res/Howell1.csv", header=TRUE, sep=';')
+
+# Noup, no duck typing.
+# d <- as_tibble(d)
+
+d$age <- (d$age - mean(d$age))/sd(d$age)
+set.seed( 1000 )
+i <- sample(1:nrow(d),size=nrow(d)/2)
+d1 <- d[ i , ]
+d2 <- d[ -i , ]
+```
+
+6H0
+Fit the following models to the data in d1 ...   
+```{r}
+# Would have certaily been nice if the retrinking package wasn't a bowl of spagetti.
+#source1 <- function(path, fun)
+#{
+#  source(path, local= TRUE)
+#  get(fun)
+#}
+#max.a.posteriori <- source1("res/map.r","map")
+library(rethinking)
+max.a.posteriori <- map
+
+fit.poly <- function( order=1 )
+{
+    # I am sure this is quite messy, but don't speak enough R to
+    # conform to best practices of efficiency and correctness.
+    first <- "map( data=d2, flist=alist( height ~ dnorm( mu , sigma ), a ~ dnorm( 156 , 100 ), sigma ~ dunif( 0 , 50 ), "
+    second <- "mu <- a"
+    third <- ""
+    if( order > 0 )
+    {
+        for( i in 1:order )
+        {
+            second <- paste( second, " + b", i, " * x^", i, "", sep="" )
+            third <- paste( third, ", b", i, " ~ dnorm( 0, 10 )", sep="")
+        }
+    }
+    expr <- paste( first, second, third )
+    #eval( parse( text=expr ) )
+
+#    eval(parse(text="5+5"))
+#    ret <- map( alist( height ~ dnorm( mu , sigma )
+#                     , mu <- a + b*weight
+#                     , a ~ dnorm( 156 , 100 )
+#                     , b ~ dnorm( 0 , 10 )
+#                     , sigma ~ dunif( 0 , 50 ) )
+#              , data=d2 )
+}
+# Note that we are not filtering away children!
+#m4.3 <- map( alist( height ~ dnorm( mu , sigma )
+#                  , mu <- a + b*weight
+#                  , a ~ dnorm( 156 , 100 )
+#                  , b ~ dnorm( 0 , 10 )
+#                  , sigma ~ dunif( 0 , 50 ) )
+#           , data=d2 )
+
+
+#m1 <- max.a.posteriori( flist=alist(kcal.per.g ~ dnorm( a , exp(log.sigma) )) 
+#                      , data=d1 )
+# TODO: how to: import from res/map.r import map as MsdfsdfAsdfsfsPsdsdfs
+
+#p42 206
+```
+```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60), results = 'asis'}
+print(fit.poly(10))
+```
+
+
 6H1. Compare the models above, using WAIC.
 Compare the model rankings, as well as the WAIC weights.  
-A:
+A:p192 p206  
+```{r}
+# TODO: we are going to neet the R/zWAIC_methods.R here
+print("kur")
 
+```
 
 6H2. For each model, produce a plot with model averaged mean and 97% confidence interval of the mean, superimposed on the raw data.
 How do predictions differ across models?  
-A:
+A:  
+```{r}
+# TODO: confidence intervals in R?
+# TODO: or even better: stats/miniexam2.R
+```
 
 
 6H3. Now also plot the model averaged predictions, across all models.
 In what ways do the averaged predictions differ from the predictions of the model with the lowest WAIC value?  
-A:
+A: p203  
+```{r}
+```
 
 
 6H4. Compute the test-sample deviance for each model.
@@ -148,6 +234,8 @@ sum( dnorm( d2$height , mu , sigma , log=TRUE ) )
 ```
 where mu is a vector of predicted means (based upon age values and MAP parameters) and sigma is the MAP standard deviation.  
 A:
+```{r}
+```
 
 
 6H5. Compare the deviances from 6H4 to the WAIC values.
@@ -156,6 +244,8 @@ For example, subtract the minimum WAIC from all of the WAIC values so that the b
 Which model makes the best out-of-sample predictions in this case?
 Does WAIC do a good job of estimating the test deviance?  
 A:
+```{r}
+```
 
 
 6H6. Consider the following model:
@@ -175,3 +265,5 @@ Then compute the out-of-sample deviance using the data in d2, using MAP estimate
 How does this model, using regularizing priors, compare to the best WAIC model from earlier?
 How do you interpret this result?  
 A:
+```{r}
+```
