@@ -164,7 +164,7 @@ fit.poly <- function( order=1 )
         for( i in 1:order )
         {
             second <- paste( second, " + b", i, " * weight^", i, sep="" )
-            third <- paste( third, ", b", i, " ~ dnorm( 0, 10 )", sep="")
+            third <- paste( third, ", b", i, " ~ dnorm( 0, 1 )", sep="")
             if( i > 1)
             {
                 fourth <- paste(fourth, ", ", sep="")
