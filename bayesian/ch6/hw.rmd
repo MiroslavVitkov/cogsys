@@ -126,13 +126,11 @@ They do not, if the priror is spot on.
 Else, we are multiplaying observed data by prior likelyhood close to zero, resulting in close to zero values.
 
 
-Preparation for the hard section  
+6H0  
 ```{r}
-library(tidyverse)
-
 d <- read.csv("res/Howell1.csv", header=TRUE, sep=';')
 
-# Noup, no duck typing.
+# Nope, no duck typing.
 # d <- as_tibble(d)
 
 d$age <- (d$age - mean(d$age))/sd(d$age)
@@ -140,11 +138,8 @@ set.seed( 1000 )
 i <- sample(1:nrow(d),size=nrow(d)/2)
 d1 <- d[ i , ]
 d2 <- d[ -i , ]
-```
 
-6H0
-Fit the following models to the data in d1 ...   
-```{r}
+```{r, results='hide', message=FALSE}
 # Would have certaily been nice if the retrinking package wasn't a bowl of spagetti.
 #source1 <- function(path, fun)
 #{
@@ -153,61 +148,49 @@ Fit the following models to the data in d1 ...
 #}
 #max.a.posteriori <- source1("res/map.r","map")
 library(rethinking)
-max.a.posteriori <- map
-
+```
+```{r}
 fit.poly <- function( order=1 )
 {
     # I am sure this is quite messy, but don't speak enough R to
     # conform to best practices of efficiency and correctness.
-    first <- "map( data=d2, flist=alist( height ~ dnorm( mu , sigma ), a ~ dnorm( 156 , 100 ), sigma ~ dunif( 0 , 50 ), "
+    first <- "rethinking::map( data=d1, flist=alist( height ~ dnorm( mu, sigma )"
+    first <- paste( first, ", sigma ~ dunif( 0, 50 ), a ~ dnorm( 178, 100 ), " )
     second <- "mu <- a"
     third <- ""
+    fourth <- ", start=list( "
     if( order > 0 )
     {
         for( i in 1:order )
         {
-            second <- paste( second, " + b", i, " * x^", i, "", sep="" )
+            second <- paste( second, " + b", i, " * weight^", i, sep="" )
             third <- paste( third, ", b", i, " ~ dnorm( 0, 10 )", sep="")
+            if( i > 1)
+            {
+                fourth <- paste(fourth, ", ", sep="")
+            }
+            fourth <- paste( fourth, "b", i, " = 0 ", sep="" )
         }
     }
-    expr <- paste( first, second, third )
-    #eval( parse( text=expr ) )
-
-#    eval(parse(text="5+5"))
-#    ret <- map( alist( height ~ dnorm( mu , sigma )
-#                     , mu <- a + b*weight
-#                     , a ~ dnorm( 156 , 100 )
-#                     , b ~ dnorm( 0 , 10 )
-#                     , sigma ~ dunif( 0 , 50 ) )
-#              , data=d2 )
+    expr <- paste( first, second, third, " )", fourth, " ) )", sep="" )
+    eval( parse( text=expr ) )
 }
+
 # Note that we are not filtering away children!
-#m4.3 <- map( alist( height ~ dnorm( mu , sigma )
-#                  , mu <- a + b*weight
-#                  , a ~ dnorm( 156 , 100 )
-#                  , b ~ dnorm( 0 , 10 )
-#                  , sigma ~ dunif( 0 , 50 ) )
-#           , data=d2 )
-
-
-#m1 <- max.a.posteriori( flist=alist(kcal.per.g ~ dnorm( a , exp(log.sigma) )) 
-#                      , data=d1 )
-# TODO: how to: import from res/map.r import map as MsdfsdfAsdfsfsPsdsdfs
-
-#p42 206
-```
-```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60), results = 'asis'}
-print(fit.poly(10))
+(m1 <- fit.poly(1))
+(m2 <- fit.poly(2))
+(m3 <- fit.poly(3))
+(m4 <- fit.poly(4))
+(m5 <- fit.poly(5))
+(m6 <- fit.poly(6))
 ```
 
 
 6H1. Compare the models above, using WAIC.
 Compare the model rankings, as well as the WAIC weights.  
-A:p192 p206  
+A:  
 ```{r}
-# TODO: we are going to neet the R/zWAIC_methods.R here
-print("kur")
-
+rethinking::compare( m1 , m2, m3 )
 ```
 
 6H2. For each model, produce a plot with model averaged mean and 97% confidence interval of the mean, superimposed on the raw data.
