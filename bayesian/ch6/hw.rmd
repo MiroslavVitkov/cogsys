@@ -185,6 +185,14 @@ fit.poly <- function( order=1 )
 # I also tried b_i ~ dnorm(0, x / i) or i squared to no avail.
 (m5 <- fit.poly(5))
 (m6 <- fit.poly(6))
+
+# Read individual parameters off the trained models.
+get.param <- function( model, param.name )
+{
+    c <- model@coef[ param.name ]
+    as.numeric( c )
+}
+get.param(m1, 'sigma')
 ```
 
 
