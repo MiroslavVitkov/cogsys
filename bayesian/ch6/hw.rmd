@@ -6,7 +6,7 @@ library(rmarkdown)
 argv <- commandArgs(trailingOnly=FALSE)
 fname <- sub("--file=", "", argv[grep("--file=", argv)])
 render(fname, output_format="pdf_document")
-stopifnot(FALSE)  # Stop trying to interpret the rest of the file as valid R.
+quit(status=0)
 #-->
 
 
@@ -212,8 +212,13 @@ A:
 # The '+' cannot be on the new line.
 # Thus, every time when adding or removing a geometry,
 # 2 lines need to be edited. Go figure.
-ggplot(data=d1, mapping=aes(x=1:nrow(d1), y=height)) +
-    geom_point()
+str(m1)
+(f <- m1@formula)
+str(f)
+class(f)
+#eval( parse( text=f ) )
+ggplot() +
+    geom_point( data=d1, mapping=aes(x=1:nrow(d1), y=height) )
   #  + geom_abline(intercept=4.45731476, slope=0.02295616)
 # TODO: confidence intervals in R?
 # TODO: or even better: stats/miniexam2.R
