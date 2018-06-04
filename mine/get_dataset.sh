@@ -10,7 +10,7 @@ set -e
 
 URL='https://archive.ics.uci.edu/ml/machine-learning-databases/00235/household_power_consumption.zip'
 TEMPDIR='/tmp/household_power_consumption_tempdir'
-OUTFILE='extern/power_truncated'
+OUTFILE='build/power_truncated'
 
 BASENAME="${URL##*/}"
 BASENAME="${BASENAME%.*}"
