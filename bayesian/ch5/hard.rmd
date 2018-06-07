@@ -26,6 +26,10 @@ library( rethinking )
 ```{r}
 data( foxes )
 
+# Normalise the data in-place.
+foxes$area <- ( foxes$area - mean(foxes$area) ) / sd( foxes$area )
+foxes$groupsize <- ( foxes$groupsize - mean(foxes$groupsize) ) / sd( foxes$groupsize )
+
 weight.vs.area <- rethinking::map( alist( weight ~ dnorm( mu , sigma )
                                         , mu <- a + b*area
                                         , a ~ dnorm( 4.5, 1 )
