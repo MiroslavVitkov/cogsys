@@ -6,7 +6,7 @@ library(rmarkdown)
 argv <- commandArgs(trailingOnly=FALSE)
 fname <- sub("--file=", "", argv[grep("--file=", argv)])
 render(fname, output_format="pdf_document")
-stopifnot(FALSE)  # Stop trying to interpret the rest of the file as valid R.
+quit(status=0)
 #-->
 
 
@@ -71,4 +71,34 @@ The `area` feature seems to predict fox weight somewhat well.
 Plot the predictions of the model for each predictor, holding the other predictor constant at its mean.
 What does this model say about the importance of each variable?
 Why do you get different results than you got in the exercise just above?
+A:  
 
+```{r}
+multivar <- rethinking::map( alist( weight ~ dnorm( mu , sigma )
+                                             , mu <- a + b*area + c*groupsize
+                                             , a ~ dnorm( 4.5, 1 )
+                                             , b ~ dnorm( 0, 10 )
+                                             , c ~ dnorm( 0, 10 )
+                                             , sigma ~ dunif( 0, 50 ) )
+                                      , data=foxes )
+
+#draw2 <- function( model )
+#{
+    model <- multivar
+
+    a <- get.param( model, "a" )
+    b <- get.param( model, "b" )
+    c <- get.param( model, "c" )
+
+    # Why is no plot generated if this is executed within `local({})`?
+    ggplot() +
+        geom_point( data=foxes, mapping=aes(x=1:nrow(foxes), y=weight) ) +
+        geom_abline( intercept=a+c*mean(foxes$groupsize), slope=b, colour="blue" )
+        geom_abline( intercept=a+b*mean(foxes$area), slope=c, colour="green" )
+
+a+c*mean(foxes$groupsize)
+a+b*mean(foxes$area)
+#}
+
+#draw2( multivar )
+```
