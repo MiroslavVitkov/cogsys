@@ -17,13 +17,12 @@ date: "compiled on: `r Sys.time()`"
 ---
 
 
-5H1.  
+#5H1
 Fit two bivariate Gaussian regressions, using map : (1) body weight as a linear function of territory size ( area ), and (2) body weight as a linear function of groupsize.
-Plot the results of these regressions, displaying the MAP regression line and the 95% interval of the mean.
-Is either variable important for predicting fox body weight?
 ```{r, results='hide', message=FALSE}
 library( rethinking )
 ```
+
 ```{r}
 data( foxes )
 
@@ -42,7 +41,10 @@ weight.vs.groupsize <- rethinking::map( alist( weight ~ dnorm( mu , sigma )
                                              , sigma ~ dunif( 0, 50 ) )
                                       , data=foxes )
 weight.vs.groupsize
+```
 
+Plot the results of these regressions, displaying the MAP regression line and the 95% interval of the mean.
+```{r}
 # Read individual parameters off the trained models.
 get.param <- function( model, param.name )
 {
@@ -51,21 +53,31 @@ get.param <- function( model, param.name )
 }
 
 
-draw <- function( model )
-{
-    a <- get.param( model, "a" )
-    b <- get.param( model, "b" )
-    ggplot() +
-        geom_point( data=foxes, mapping=aes(x=1:nrow(foxes), y=weight) ) +
-        geom_abline( intercept=a, slope=b )
-}
+a <- get.param( weight.vs.area, "a" )
+b <- get.param( weight.vs.area, "b" )
+# If I pass `area` with a variable, ggplot doesn't complain but plots it as 0!
+ggplot() +
+    geom_point( data=foxes, mapping=aes(x=area, y=weight) ) +
+    geom_abline( intercept=a, slope=b ) +
+    ggtitle('Foxes')
 
-draw( weight.vs.area )
-draw( weight.vs.groupsize )
+
+a <- get.param( weight.vs.groupsize, "a" )
+b <- get.param( weight.vs.groupsize, "b" )
+# If I pass `area` with a variable, ggplot doesn't complain but plots it as 0!
+ggplot() +
+    geom_point( data=foxes, mapping=aes(x=groupsize, y=weight) ) +
+    geom_abline( intercept=a, slope=b ) +
+    ggtitle('Foxes')
+
+# What is an 'interval of the mean'?
 ```
 
-The `area` feature seems to predict fox weight somewhat well.
-
+Is either variable important for predicting fox body weight?
+```{r}
+cor( foxes$weight, foxes$area )
+cor( foxes$weight, foxes$groupsize )
+```
 
 5H2. Now fit a multiple linear regression with weight as the outcome and both area and groupsize as predictor variables.
 Plot the predictions of the model for each predictor, holding the other predictor constant at its mean.
