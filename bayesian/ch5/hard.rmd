@@ -29,6 +29,7 @@ data( foxes )
 # Normalise the data in-place.
 foxes$area <- ( foxes$area - mean(foxes$area) ) / sd( foxes$area )
 foxes$groupsize <- ( foxes$groupsize - mean(foxes$groupsize) ) / sd( foxes$groupsize )
+foxes$avgfood <- ( foxes$avgfood - mean(foxes$avgfood) ) / sd( foxes$avgfood )
 
 weight.vs.area <- rethinking::map( alist( weight ~ dnorm( mu , sigma )
                                         , mu <- a + b*area
@@ -120,3 +121,44 @@ Why do you get different results than you got in the exercise just above?
 
 The model is compensating the slope of one predictor with the slope of the other.
 Thus the more extreme values at high levels of the predictor.
+
+
+# 5H3
+Finally, consider the avgfood variable.
+Fit two more multiple regressions: (1) body weight as an additive function of avgfood and groupsize, and (2) body weight as an additive function of all three variables, avgfood and groupsize and area.
+```{r}
+group.food <- rethinking::map( alist( weight ~ dnorm( mu , sigma )
+                                    , mu <- a + b*avgfood + c*groupsize
+                                    , a ~ dnorm( 4.5, 1 )
+                                    , b ~ dnorm( 0, 10 )
+                                    , c ~ dnorm( 0, 10 )
+                                    , sigma ~ dunif( 0, 50 ) )
+                             , data=foxes )
+group.food
+
+group.food.area <- rethinking::map( alist( weight ~ dnorm( mu , sigma )
+                                         , mu <- a + b*avgfood + c*groupsize + d*area
+                                         , a ~ dnorm( 4.5, 1 )
+                                         , b ~ dnorm( 0, 10 )
+                                         , c ~ dnorm( 0, 10 )
+                                         , d ~ dnorm( 0, 10 )
+                                         , sigma ~ dunif( 0, 50 ) )
+                                  , data=foxes )
+group.food
+```
+
+Compare the results of these models to the previous models you’ve fit, in the first two exercises.  
+  (a) Is avgfood or area a better predictor of body weight?
+  If you had to choose one or the other to include in a model, which would it be?
+  Support your assessment with any tables or plots you choose.  
+```{r}
+cor( foxes$weight, foxes$area )
+cor( foxes$weight, foxes$avgfood )
+```
+
+  (b) When both avgfood or area are in the same model, their effects are reduced (closer to zero) and their standard errors are larger than when they are included in separate models.
+  Can you explain this result?
+```{r}
+cor( foxes$avgfood, foxes$area )
+```
+
