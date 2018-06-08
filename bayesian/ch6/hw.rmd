@@ -150,20 +150,32 @@ d2 <- d[ -i , ]
 library(rethinking)
 ```
 ```{r setup_hard2}
-fit.poly <- function( order=1 )
+poly.mu <- function( order=1 )
+{
+    mu <- "mu <- a"
+    if( order > 0 )
+    {
+        for( i in 1:order )
+        {
+            mu <- paste( mu, " + b", i, " * weight^", i, sep="" )
+        }
+    }
+    mu
+}
+
+
+poly.fit <- function( order=1 )
 {
     # I am sure this is quite messy, but don't speak enough R to
     # conform to best practices of efficiency and correctness.
     first <- "rethinking::map( data=d1, flist=alist( height ~ dnorm( mu, sigma )"
     first <- paste( first, ", sigma ~ dunif( 0, 50 ), a ~ dnorm( 178, 100 ), " )
-    second <- "mu <- a"
     third <- ""
     fourth <- ", start=list( "
     if( order > 0 )
     {
         for( i in 1:order )
         {
-            second <- paste( second, " + b", i, " * weight^", i, sep="" )
             third <- paste( third, ", b", i, " ~ dnorm( 0, 1 )", sep="")
             if( i > 1)
             {
@@ -172,19 +184,23 @@ fit.poly <- function( order=1 )
             fourth <- paste( fourth, "b", i, " = 0 ", sep="" )
         }
     }
-    expr <- paste( first, second, third, " )", fourth, " ) )", sep="" )
+    mu <- poly.mu(order)
+    mu
+    expr <- paste( first, mu, third, " )", fourth, " ) )", sep="" )
     eval( parse( text=expr ) )
 }
 
+
 # Note that we are not filtering away children!
-(m1 <- fit.poly(1))
-(m2 <- fit.poly(2))
-(m3 <- fit.poly(3))
-(m4 <- fit.poly(4))
+(m1 <- poly.fit(1))
+(m2 <- poly.fit(2))
+(m3 <- poly.fit(3))
+(m4 <- poly.fit(4))
 # Nope, this one refuses to fit.
 # I also tried b_i ~ dnorm(0, x / i) or i squared to no avail.
-(m5 <- fit.poly(5))
-(m6 <- fit.poly(6))
+(m5 <- poly.fit(5))
+(m6 <- poly.fit(6))
+
 
 # Read individual parameters off the trained models.
 get.param <- function( model, param.name )
@@ -212,11 +228,9 @@ A:
 # The '+' cannot be on the new line.
 # Thus, every time when adding or removing a geometry,
 # 2 lines need to be edited. Go figure.
-str(m1)
-(f <- m1@formula)
-str(f)
-class(f)
-#eval( parse( text=f ) )
+
+# todo: obtain model prediction by poly.mu(i)
+
 ggplot() +
     geom_point( data=d1, mapping=aes(x=1:nrow(d1), y=height) )
   #  + geom_abline(intercept=4.45731476, slope=0.02295616)
@@ -227,7 +241,7 @@ ggplot() +
 
 6H3. Now also plot the model averaged predictions, across all models.
 In what ways do the averaged predictions differ from the predictions of the model with the lowest WAIC value?  
-A: p203  
+A:  
 ```{r ensemble, results='hide', message=FALSE}
 avv <- rethinking::ensemble( m1, m2, m3, m4 )
 ```
@@ -235,7 +249,6 @@ avv <- rethinking::ensemble( m1, m2, m3, m4 )
 avv[0][0]
 #ggplot(data=d1, mapping=aes(x=1:nrow(d1), y=height)) +
 #    geom_point()
-# TODO: make predictions with m4
 ```
 
 
