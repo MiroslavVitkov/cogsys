@@ -223,20 +223,6 @@ rethinking::compare( m1 , m2, m3, m4 )
 6H2. For each model, produce a plot with model averaged mean and 97% confidence interval of the mean, superimposed on the raw data.
 How do predictions differ across models?  
 A:  
-```{r plot_models}
-# I love this language more and more.
-# The '+' cannot be on the new line.
-# Thus, every time when adding or removing a geometry,
-# 2 lines need to be edited. Go figure.
-
-# todo: obtain model prediction by poly.mu(i)
-
-ggplot() +
-    geom_point( data=d1, mapping=aes(x=1:nrow(d1), y=height) )
-  #  + geom_abline(intercept=4.45731476, slope=0.02295616)
-# TODO: confidence intervals in R?
-# TODO: or even better: stats/miniexam2.R
-```
 
 
 6H3. Now also plot the model averaged predictions, across all models.
@@ -244,11 +230,6 @@ In what ways do the averaged predictions differ from the predictions of the mode
 A:  
 ```{r ensemble, results='hide', message=FALSE}
 avv <- rethinking::ensemble( m1, m2, m3, m4 )
-```
-```{r}
-avv[0][0]
-#ggplot(data=d1, mapping=aes(x=1:nrow(d1), y=height)) +
-#    geom_point()
 ```
 
 
