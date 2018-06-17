@@ -40,7 +40,7 @@ def d_DTW(x, x2, dist):
         for j in range(1, np.shape(dp)[1]):
             dp[i, j] = calc_cell(i, j)
     assert dp[0, 0] == 0, 'Don`t overwrite (0,0)!'
-    print('Distances:\n', dp)
+#    print('Distances:\n', dp)
 
 
     return dp[t1, t2]
@@ -91,3 +91,98 @@ def build_dtw_gram_matrix(xs, x2s, k):
 
 
 build_dtw_gram_matrix([[1, 2], [2, 3]], [[1, 2, 3], [4]], k1)
+
+
+def L2_reg(w, lbda):
+    return 0.5 * lbda * (np.dot(w.T, w)), lbda*w
+
+def hinge_loss(h, y):
+    print('hinge loss ', np.shape(h), np.shape(y))
+    n = len(h)
+    l = np.maximum(0, np.ones(n) - y*h)
+    g = -y * (h > 0)
+    return l, g
+
+
+def learn_reg_kernel_ERM(X, y, lbda, k, loss=hinge_loss, reg=L2_reg, max_iter=200, tol=0.001, eta=1., verbose=False):
+    """Kernel Linear Regression (default: kernelized L_2 SVM)
+    X -- data, each row = instance
+    y -- vector of labels, n_rows(X) == y.shape[0]
+    lbda -- regularization coefficient lambda
+    k -- the kernel function
+    loss -- loss function, returns vector of losses (for each instance) AND the gradient
+    reg -- regularization function, returns reg-loss and gradient
+    max_iter -- max. number of iterations of gradient descent
+    tol -- stop if norm(gradient) < tol
+    eta -- learning rate
+    """
+    num_features = X.shape[1]
+    g_old = None
+
+
+    K = build_dtw_gram_matrix(X, X, k)
+    w = np.array([np.random.randn(num_features) for i in range((K.shape[0]))])
+
+    for _ in range(max_iter):
+#        h = []
+#        h = np.dot(X.T, w)
+        h = predict(w, X, X, k)
+        print('X, h = ', np.shape(X), np.shape(h))
+        print('h = ', h)
+        l, lg = loss(h, y)
+
+        if verbose:
+            print('training loss: ' + str(np.mean(l)))
+
+        r, rg = reg(w, lbda)
+        g = lg + rg
+
+        def d(x1, x2):
+            # Gram matrix K changes scalar product from <x, x'> = x^T x to x^T K x
+            lhs = np.dot(x1.T, K)
+            return np.dot(lhs, x2)
+        if g_old is not None:
+            eta = eta*(d(g_old, g_old))/(d((g_old - g), g_old))
+
+        w = w - eta*g
+        if (np.linalg.norm(eta*g)<tol):
+            break
+        g_old = g
+
+    return w, K
+
+
+def predict(alpha, X, X_train, k):
+    K = build_dtw_gram_matrix(X_train, X, k)
+    y_pred = np.dot(K, alpha)
+    y_pred[y_pred >= 0] = 1
+    y_pred[y_pred < 0] = -1
+    return y_pred
+
+
+import os
+from scipy.io import loadmat # for matlab *.mat format, for modern once need to install hdf5
+
+file_path = "laser_small.mat" # file path for multi os support
+mat = loadmat(file_path)
+
+X = mat['X']
+y = mat['Y'].reshape(50)
+
+print(X.shape, y.shape)
+
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
+
+print(X_train.shape, X_test.shape)
+
+
+alpha, K = learn_reg_kernel_ERM(X_train, y_train, lbda=1, k=k2, max_iter=20000, eta=1, tol=1e-3, verbose=True)
+
+
+y_pred = predict(alpha, X_train, X_train, k2)
+print("Training Accuracy: {}".format(np.mean(y_train == y_pred)))
+print("Test Accuracy: {}".format(np.mean(y_test == predict(alpha,X_train, X_test, k2))))
+print("Shape of alpha {}".format(alpha.shape))
