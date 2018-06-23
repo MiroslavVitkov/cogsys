@@ -1,8 +1,11 @@
 #!/usr/bin/env Rscript
 
-library( tidyverse )
+
+require( tidyverse )
+
 
 source( "read.r" )
+
 
 read.dataset() %>% print.dataset() -> d
 
