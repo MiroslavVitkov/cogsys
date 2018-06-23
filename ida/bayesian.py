@@ -9,7 +9,7 @@ from scipy.stats import norm
 
 
 def uniform_generator(a, b):
-    assert a <= b
+    assert a <= b  # This allows a dirac delta.
     while True:
         # No idea where does scipy get its seed from,
         # but every two unseeded uniform distributions
@@ -23,7 +23,7 @@ def uniform_generator(a, b):
 
 
 def normal_generator(mean, std):
-    assert std >= 0
+    assert std >= 0  # Again.
     while True:
         # 'The location (loc) keyword specifies the mean.
         # The scale (scale) keyword specifies the standard deviation.'
