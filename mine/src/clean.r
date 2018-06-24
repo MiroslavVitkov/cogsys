@@ -7,7 +7,7 @@ library(tidyverse)
 source( "read.r" )
 
 
-d = read.dataset()
+d = read.dataset( print=TRUE )
 
 
 # Valid times are those between the first and last measuremet.

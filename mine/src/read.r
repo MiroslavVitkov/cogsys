@@ -1,27 +1,11 @@
 #!/usr/bin/env Rscript
 
 
-# Reads a file into a tibble.
+# Reads the dataset file into a tibble.
+# Casts everything to consistent physical units.
 
 
 library( tidyverse )
-
-
-read.dataset = function( file.name="../build/power_truncated", print=FALSE )
-{
-    read.csv( file.name, header=TRUE, sep=';' ) %>% as_tibble() -> d
-#    print(as.POSIXct(d[[1]]))
-#    d[[1]] = as.Date( d[[1]] )
-#    d[[1]] <- as.POSIXct( d[[1]] )
-#    d[[2]] <- as.POSIXct( d[[2]], format="%hh:%mm:%ss" )
-    
-
-    # if print
-    options(tibble.print_max = Inf, tibble.print_max = Inf)
-    print(d, nrow=100)
-
-    return(d)
-}
 
 
 # Produce a POSIXct value out of date and time strings.
@@ -34,10 +18,38 @@ as.time = function( date, time )
 stopifnot( as.time( '16/12/2006', '17:50:00' ) == as.POSIXct( "16/12/200617:50:00", format="%d/%m/%Y%H:%M:%S" ) )
 
 
-# Active energy consumed every minute (in watt hour) in the household
-# by electrical equipment not measured in sub-meterings 1, 2 and 3.
-compose.sub_metering_rest = function( dataset )
+# An attempt to convert 'watt-hour of active energy'
+# to 'minute-averaged active power'.
+Wh.to.W = function( Wh )
 {
-# global_active_power*1000/60 - sub_metering_1 - sub_metering_2 - sub_metering_3
-    return(kur)
+    return( Wh / 3600 )
 }
+stopifnot( Wh.to.W( 3.14 ) == 3.14 / 3600 )
+
+
+read.dataset = function( file.name="../build/power_truncated", print=FALSE )
+{
+    d = read.csv( file.name, header=TRUE, sep=';' )
+
+    time = as.time( d$Date, d$Time )
+    active.W = d$Global_active_power * 1000
+    reactive.VA = d$Global_reactive_power
+    voltage.V = d$Voltage
+    current.A = d$Global_intensity
+    active1.W = Wh.to.W( d$Sub_metering_1 )
+    active2.W = Wh.to.W( d$Sub_metering_2 )
+    active3.W = Wh.to.W( d$Sub_metering_3 )
+    active4.W = active.W - active1.W - active2.W - active3.W
+
+    ret = tibble( time, active.W, reactive.VA, voltage.V, current.A
+                , active1.W, active2.W, active3.W, active4.W )
+
+    if( print )
+    {
+        options( tibble.print_max = Inf )
+        print( ret, nrow=100 )
+    }
+
+    return( ret )
+}
+read.dataset()
