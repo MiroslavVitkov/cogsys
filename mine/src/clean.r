@@ -17,7 +17,7 @@ date.is.valid = function( date )
 {
     date >= date.first && date <= date.last
 }
-#stopifnot( ! date.is.valid( Sys.time() )
+stopifnot( ! date.is.valid( Sys.time() ) )
 stopifnot( date.is.valid( date.last ) )
 
 
