@@ -40,8 +40,15 @@ stopifnot( .calc.power.factor( 2, 42, 42 ) == 0.5  )
 
 read.dataset = function( file.name="../build/power_truncated", print.rows=0 )
 {
-    d = read.csv( file.name, header=TRUE, sep=';' )
+    d = read.csv( file.name, header=TRUE, sep=';', stringsAsFactors=FALSE )
 
+    # Convert '?' -> NA, factor -> double.
+    d[ d == '?'] = NA
+    factors = c('Global_active_power', 'Global_reactive_power', 'Voltage', 'Global_intensity', 'Sub_metering_1', 'Sub_metering_2', 'Sub_metering_3')
+    d[factors] <- lapply( d[factors], function(x) as.numeric( as.character( x ) ) )
+
+    # Output tibble consists of slightly different attributes.
+    # Furthermore, all attributes are scaled to SI base units.
     time = .as.time( d$Date, d$Time )
     active.W = d$Global_active_power * 1000
     reactive.VA = d$Global_reactive_power
