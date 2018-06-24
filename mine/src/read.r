@@ -51,7 +51,7 @@ read.dataset = function( file.name="../build/power_truncated", print.rows=0 )
     # Furthermore, all attributes are scaled to SI base units.
     time = .as.time( d$Date, d$Time )
     active.W = d$Global_active_power * 1000
-    reactive.VA = d$Global_reactive_power
+    reactive.VA = d$Global_reactive_power * 1000
     voltage.V = d$Voltage
     current.A = d$Global_intensity
     pf = .calc.power.factor( current.A, voltage.V, active.W )
