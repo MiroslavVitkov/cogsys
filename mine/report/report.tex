@@ -94,10 +94,18 @@ This decision has been motivated by several observations:
     \item{Although the new irregular timescale hinders the analysis (and particularly continuous time estimates such as regressions), this approach is believed to introduce the least ammount of subjectivity.}
 \end{itemize}
 \para
-Another major challange are inconsistent values.
+Another major challange were inconsistent values.
 For example, very early in the analysis it was observed that Power factor values routinely exceed their theoretical maximum value of 1.0.
-Power factor violations consitute ??\% of the remaining data after dropping empty measurements.
-Blqh blqh.
+Power factor violations consitute about 52\% of the remaining data after dropping empty measurements.
+The followind approaches were considered - and overjected - for coping with said problem.
+\begin{itemize}
+    \itema{Drop offending roles - rejected because of high percentage of offending rows and low error band}
+    \item{Correct \code{pf} and immediately related quantities - not feasable because of the large subjective skew to be introduced to the database.}
+    \item{Clip \code{pf} to valid range - not performed as then the other qunatities would have produced ghost deviations and undetectable errors.}
+\end{itemize}
+Consequently, \code{pf} verification was just turned off.
+All other violations were filtered out.
+
 
 \subsection{Regression}
 % ========================================================

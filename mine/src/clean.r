@@ -53,7 +53,7 @@ is.valid.row = function( dataset=d )
         .power.is.valid( d$reactive.VA ) &
         .power.is.valid( d$voltage.V ) &  # Let's be
         .power.is.valid( d$current.A ) &  # super lazy.
-        .pf.is.valid( d$pf ) &
+#        .pf.is.valid( d$pf ) &  # This drops half the database. Just no.
         .power.is.valid( d$active1.W ) &
         .power.is.valid( d$active2.W ) &
         .power.is.valid( d$active3.W ) &
@@ -62,4 +62,7 @@ is.valid.row = function( dataset=d )
     return( v )
 }
 k=is.valid.row()
-print(sum(k[k==TRUE])/length(rownames(d)))
+
+
+print('The following part of the database was dropped due to sanity violations(excluding pf violations):')
+print(1-sum(k[k==TRUE])/length(rownames(d)))
