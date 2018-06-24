@@ -25,7 +25,7 @@
 
 \title{\MakeMeBlue{title?}}
 \author{Miroslav Vitkov}
-\date{todo: get from rpg repo}
+\date{\today}
 
 % ========================================================
 \begin{document}
@@ -33,7 +33,7 @@
 
 % ========================================================
 \section{Introduction}
-The Household Power Consumption database was donated to the public domain by ?? in 2010.
+The Household Power Consumption database was donated to the public domain by Georges Hebrail in 2010.
 It contains 9 attributes, about 1.25\% of the measurements are missing.
 \para
 The goal of the current analysis is to gleam the following insights out of the database:
@@ -99,7 +99,7 @@ For example, very early in the analysis it was observed that Power factor values
 Power factor violations consitute about 52\% of the remaining data after dropping empty measurements.
 The followind approaches were considered - and overjected - for coping with said problem.
 \begin{itemize}
-    \itema{Drop offending roles - rejected because of high percentage of offending rows and low error band}
+    \item{Drop offending roles - rejected because of high percentage of offending rows and low error band}
     \item{Correct \code{pf} and immediately related quantities - not feasable because of the large subjective skew to be introduced to the database.}
     \item{Clip \code{pf} to valid range - not performed as then the other qunatities would have produced ghost deviations and undetectable errors.}
 \end{itemize}
