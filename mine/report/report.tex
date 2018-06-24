@@ -49,7 +49,7 @@ The initial state of the data is plain instrument readings.
 % ========================================================
 \section{Related Work}
 Chujai et al\cite{q1} explore household power prediction.
-Despite some gramamtical errors, they state that the ARIMA algorithm is a good predictor.
+Despite some grammatical errors, they state that the ARIMA algorithm is a good predictor.
 \para 
 Some Hébrail has explored privacy issues with household data collection\cite{q2}.
 % ========================================================
@@ -61,10 +61,10 @@ All source code is publicly available for examination and scrutiny.
 \section{Implementation}
 \subsection{Getting the data}
 The database is of significant size, spanning 2075259 instances.
-This is time consuming both for a human and for a cpu to work on.
+This is time consuming both for a human and for a CPU to work on.
 Therefore, the script \code{get\_dataset.sh} has been written.
 It accepts a numeric parameter of how many instances to be downloaded.
-If no parameter is passed, the whole datased is downloaded.
+If no parameter is passed, the whole dataset is downloaded.
 
 \subsection{Reading the data}
 The data reading step includes several subtle transformations on the data.
@@ -80,7 +80,7 @@ Power factor `pf` and Active energy in the rest of the house \code{active4.W} at
 The whole thing is represented as a \code{tidyverse::tibble} - a modern best practice among R programmers. 
 
 \subsection{Cleaning the data}
-There are a couple major challanges in cleaning the data.
+There are a couple major challenges in cleaning the data.
 \para
 One of them are missing values.
 I have selected a conservative approach of dropping datapoints with missing values.
@@ -88,17 +88,17 @@ This decision has been motivated by several observations:
 \begin{itemize}
     \item{The missing values are less than 2\% of the data.}
     \item{When values are missing, everything except \code{Date} and \code{Time} is missing at the same time.}
-    \item{Although the new irregular timescale hinders the analysis (and particularly continuous time estimates such as regressions), this approach is believed to introduce the least ammount of subjectivity.}
+    \item{Although the new irregular timescale hinders the analysis (and particularly continuous time estimates such as regressions), this approach is believed to introduce the least am mount of subjectivity.}
 \end{itemize}
 \para
-Another major challange were inconsistent values.
+Another major challenge were inconsistent values.
 For example, very early in the analysis it was observed that Power factor values routinely exceed their theoretical maximum value of 1.0.
-Power factor violations consitute about 52\% of the remaining data after dropping empty measurements.
-The followind approaches were considered - and overjected - for coping with said problem.
+Power factor violations constitute about 52\% of the remaining data after dropping empty measurements.
+The following approaches were considered - and rejected - for coping with said problem.
 \begin{itemize}
     \item{Drop offending roles - rejected because of high percentage of offending rows and low error band}
-    \item{Correct \code{pf} and immediately related quantities - not feasable because of the large subjective skew to be introduced to the database.}
-    \item{Clip \code{pf} to valid range - not performed as then the other qunatities would have produced ghost deviations and undetectable errors.}
+    \item{Correct \code{pf} and immediately related quantities - not feasible because of the large subjective skew to be introduced to the database.}
+    \item{Clip \code{pf} to valid range - not performed as then the other quantities would have produced ghost deviations and undetectable errors.}
 \end{itemize}
 Consequently, \code{pf} verification was just turned off.
 All other violations were filtered out.
