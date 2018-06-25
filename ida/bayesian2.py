@@ -50,7 +50,7 @@ def log_likelihood(X, y, weights):
 
 
 def ll1(X, y, weights):
-    # Naive implementation.
+    # Iterative implementation.
     ll = 0
     for xi, yi in zip(X, y):
         wx = np.dot(weights.T, xi)
@@ -60,7 +60,7 @@ def ll1(X, y, weights):
 
 
 def ll2(X, y, weights):
-    # Matrix produxt implementation.
+    # Matrix product implementation.
     cost = np.dot( y.T, np.dot(weights, X.T))
     WX = np.dot( weights, X.T )
     ln = - np.log( 1 + np.exp( WX ) )
@@ -69,10 +69,7 @@ def ll2(X, y, weights):
 
 
 def sigmoid(scores):
-    def sig(score):
-        return 1 / (1 + np.exp(-score))
-    s = np.array( [sig(score) for score in scores] )
-    return s
+    return np.array( [1 / (1 + np.exp(-s)) for s in scores] )
 
 
 def log_likelihood_gradient(X, y, weights):
