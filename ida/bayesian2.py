@@ -81,7 +81,6 @@ def log_likelihood_gradient(X, y, weights):
 
 
 iterations = int(1e3)
-
 weights = logistic_regression( X=X_train
                              , y=y_train
                              , num_steps=iterations
@@ -93,5 +92,18 @@ from sklearn.linear_model import LogisticRegression
 clf = LogisticRegression( max_iter=iterations, C=1000 )
 clf.fit( X_train, y_train )
 
+# Weights
 print( weights )
 print( clf.intercept_, clf.coef_ )
+
+# Predictions on training data.
+# sigmoid() is larger than 0.5 for positive parameter.
+# The decision treshold probability for binary labels is 0.5.
+# Therefore, for classification we only need to look at the sign of (x.T w).
+bias = weights[0]
+w = weights[1:]
+preds = np.sign( bias + np.dot( X_train, w.T ) )
+preds = [ (p+1)/2 for p in preds ]  # [-1; 1] -> [0; 1]
+print( 'Your accuracy: {0}'.format((preds == y_train).sum().astype(float) / len(preds)) )
+print( 'Sklearn\'s accuracy: {0}'.format(clf.score(X_train, y_train)) )
+
