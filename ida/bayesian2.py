@@ -46,7 +46,7 @@ def logistic_regression(X, y, num_steps, learning_rate, add_intercept):
 
 # My code:
 def log_likelihood(X, y, weights):
-    return ll1
+    return ll1(X, y, weights)
 
 
 def ll1(X, y, weights):
@@ -80,8 +80,18 @@ def log_likelihood_gradient(X, y, weights):
     return gradient
 
 
-logistic_regression( X=X_train
-                   , y=y_train
-                   , num_steps=20000
-                   , learning_rate=1e-5
-                   , add_intercept=False )
+iterations = int(1e3)
+
+weights = logistic_regression( X=X_train
+                             , y=y_train
+                             , num_steps=iterations
+                             , learning_rate=1e-4
+                             , add_intercept=True )
+print()
+
+from sklearn.linear_model import LogisticRegression
+clf = LogisticRegression( max_iter=iterations, C=1000 )
+clf.fit( X_train, y_train )
+
+print( weights )
+print( clf.intercept_, clf.coef_ )
