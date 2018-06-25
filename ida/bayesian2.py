@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
 
+# An excercise on the Logistic Regression classification algorith.
+
+
 import numpy as np
 
 
@@ -43,13 +46,26 @@ def logistic_regression(X, y, num_steps, learning_rate, add_intercept):
 
 # My code:
 def log_likelihood(X, y, weights):
-    # Lazy implementation - dataset needn't fit into main memory.
+    return ll1
+
+
+def ll1(X, y, weights):
+    # Naive implementation.
     ll = 0
     for xi, yi in zip(X, y):
         wx = np.dot(weights.T, xi)
         ln = np.log(1 + np.exp(wx))
         ll = ll + yi * wx - ln
     return ll
+
+
+def ll2(X, y, weights):
+    # Matrix produxt implementation.
+    cost = np.dot( y.T, np.dot(weights, X.T))
+    WX = np.dot( weights, X.T )
+    ln = - np.log( 1 + np.exp( WX ) )
+    reg = np.dot( ln, [1,] * X.shape[0] )  # Sum the column vector.
+    return cost + reg
 
 
 def sigmoid(scores):
