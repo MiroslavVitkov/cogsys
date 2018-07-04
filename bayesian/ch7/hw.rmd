@@ -50,3 +50,45 @@ For each of the explanations in 7E2, write a linear model that expresses the sta
 A:  
 The dynamics of the system is nonlinear:
 $$ P_i = a + b B_i + c C_i + d B_i C_i $$
+
+
+##7M1
+Recall the tulips example from the chapter.
+Suppose another set of treatments adjusted the temperature in the greenhouse over two levels: cold and hot.
+The data in the chapter were collected at the cold temperature.
+You find none of the plants grown under the hot temperature developed any blooms at all, regardless of the water and shade levels.
+Can you explain this result in terms of interactions between water, shade, and temperature?
+
+A:  
+We don't need interactions to explain this effect, it is linear.  
+
+
+##7M2
+Can you invent a regression equation that would make the bloom size zero, whenever the temperature is hot?
+
+A:  
+Of course:
+$$S_i=0$$
+Another answer:
+$$S_i = a + b W_i + c S_i + d W_i S_i + e T_i + f T_i W_i + g T_i S_i + h T_i S_i W_i$$
+$$T_i = \{0, 1\}$$
+$$e = - a$$
+$$f = - b$$
+$$g = - c$$
+$$h = - d$$
+
+
+##7M3
+In parts of North America, ravens depend upon wolves for their food.
+This is because ravens are carnivorous but cannot usually kill or open carcasses of prey.
+Wolves however can and do kill and tear open animals, and they tolerate ravens co-feeding at their kills.
+This species relationship is generally described as a “species interaction.”
+Can you invent a hypothetical set of data on raven population size in which this relationship would manifest as a statistical interaction?
+Do you think the biological interaction could be linear? Why or why not?
+
+A:  
+I was undert the impression that the author calls "interactions" the higher order terms in a model.
+And the a-priori model is independent from the data, thus no data can "manifest ... interactions".
+
+Similarly, “the biological interaction could be linear" depending on it's formulation.
+
