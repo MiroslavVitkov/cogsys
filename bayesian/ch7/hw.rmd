@@ -1,0 +1,52 @@
+#!/usr/bin/env Rscript
+
+
+#<!---
+library(rmarkdown)
+argv <- commandArgs(trailingOnly=FALSE)
+fname <- sub("--file=", "", argv[grep("--file=", argv)])
+render(fname, output_format="pdf_document")
+quit(status=0)
+#-->
+
+
+---
+title: "Interactions"
+author: Miroslav Vitkov
+date: "compiled on: `r Sys.time()`"
+---
+
+
+##7E1  
+For each of the causal relationships below, name a hypothetical third variable that would lead
+to an interaction effect.  
+(1) Bread dough rises because of yeast.  
+(2) Education leads to higher income.  
+(3) Gasoline makes a car go.  
+
+A:  
+(1) temperature  
+(2) GDP  
+(3) disrepair
+
+
+##7E2  
+Which of the following explanations invokes an interaction?
+(1) Caramelizing onions requires cooking over low heat and making sure the onions do not dry out.
+(2) A car will go faster when it has more cylinders or when it has a better fuel injector.
+(3) Most people acquire their political beliefs from their parents, unless they get them instead from their friends.
+(4) Intelligent animal species tend to be either highly social or have manipulative appendages (hands, tentacles, etc.).
+
+A:  
+(1) yes  
+(2) no idea  
+(3) yes  
+(4) yes  
+
+
+##7E3  
+For each of the explanations in 7E2, write a linear model that expresses the stated relationship.
+
+A:  
+The dynamics of the system is nonlinear:
+$$ P_i = a + b B_i + c C_i + d B_i C_i $$
