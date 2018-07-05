@@ -101,7 +101,7 @@ def relu( H ):
     return ret
 
 
-class NN( object ):
+class NN:
     def __init__( me, model ):
         me._model = model
 
@@ -149,3 +149,45 @@ difference =  np.sum(np.abs(probs - correct_probs))
 assert difference < 0.00001
 
 
+# <b>Exercise 3:</b> How would you train the above defined neural network? Which loss-function would you use? You do not need to implement this.
+# Instead of implementing the model learning ourselves, we can use the neural network library Keras for Python (https://keras.io/). Keras is an abstra$
+
+print( 'Quadratic loss with quadratic regularizer for it`s siplicity and popularity.' )
+
+
+# <b>Exercise 4:</b>
+#     Implement the same model as above using Keras:
+#     ** 1 hidden layer à 10 units
+#     ** softmax output layer à three units
+#     ** 4 input features
+# Compile the model using categorical cross-entropy (also referred to as 'softmax-loss') as loss function and using categorical crossentropy together $
+
+from keras.models import Sequential
+from keras.layers.core import Dense
+from keras.layers.core import Activation
+
+# The description of the current network can always be looked at via the summary method. The layers can be accessed via model.layers and weights can b$
+# Check model architecture and initial weights.
+
+# <b>Exercise 4:</b> Train the model on the toy data set generated below:
+# * Keras expects one-hot-coded labels
+# * Don't forget to normalize the data
+
+from sklearn.model_selection import train_test_split
+from keras.utils import to_categorical
+X, y = init_toy_data( 1000, 4, 3, seed=3 )
+X = zscore(X, axis=0)
+X_train, X_test, y_train, y_test = train_test_split( X, y, test_size=0.33 )
+onehot_y_train = to_categorical( y_train, num_classes=3 )
+onehot_y_test = to_categorical( y_test, num_classes=3 )
+
+# define the model
+m = Sequential()
+m.add( Dense( units=10, activation='relu', input_shape=(4,) ) )
+m.add( Dense( units=3, activation='softmax' ) )
+
+# compile the model
+m.compile( loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'] )
+m.fit( X_train, onehot_y_train, epochs=10, batch_size=32 )
+
+loss_and_metrics = m.evaluate( X_test, onehot_y_test, batch_size=4)
