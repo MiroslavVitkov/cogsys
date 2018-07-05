@@ -31,8 +31,8 @@ A:
 
 
 ##7E2  
-Which of the following explanations invokes an interaction?
-(1) Caramelizing onions requires cooking over low heat and making sure the onions do not dry out.  
+Which of the following explanations invokes an interaction?  
+(1) Caramelising onions requires cooking over low heat and making sure the onions do not dry out.  
 (2) A car will go faster when it has more cylinders or when it has a better fuel injector.  
 (3) Most people acquire their political beliefs from their parents, unless they get them instead from their friends.  
 (4) Intelligent animal species tend to be either highly social or have manipulative appendages (hands, tentacles, etc.).  
@@ -86,7 +86,7 @@ This species relationship is generally described as a “species interaction.”
 Can you invent a hypothetical set of data on raven population size in which this relationship would manifest as a statistical interaction?
 
 A:  
-I was undert the impression that the author calls "interactions" the higher order terms in a model.
+I was under the impression that the author calls "interactions" the higher order terms in a model.
 And the a-priori model is independent from the data, thus no data can "manifest ... interactions".  
 
 
