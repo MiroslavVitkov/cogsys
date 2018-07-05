@@ -32,10 +32,10 @@ A:
 
 ##7E2  
 Which of the following explanations invokes an interaction?
-(1) Caramelizing onions requires cooking over low heat and making sure the onions do not dry out.
-(2) A car will go faster when it has more cylinders or when it has a better fuel injector.
-(3) Most people acquire their political beliefs from their parents, unless they get them instead from their friends.
-(4) Intelligent animal species tend to be either highly social or have manipulative appendages (hands, tentacles, etc.).
+(1) Caramelizing onions requires cooking over low heat and making sure the onions do not dry out.  
+(2) A car will go faster when it has more cylinders or when it has a better fuel injector.  
+(3) Most people acquire their political beliefs from their parents, unless they get them instead from their friends.  
+(4) Intelligent animal species tend to be either highly social or have manipulative appendages (hands, tentacles, etc.).  
 
 A:  
 (1) yes  
@@ -60,7 +60,7 @@ You find none of the plants grown under the hot temperature developed any blooms
 Can you explain this result in terms of interactions between water, shade, and temperature?
 
 A:  
-We don't need interactions to explain this effect, it is linear.  
+Hot temperature counters the effects of water and sun on the size of the flowers.
 
 
 ##7M2
@@ -84,11 +84,15 @@ This is because ravens are carnivorous but cannot usually kill or open carcasses
 Wolves however can and do kill and tear open animals, and they tolerate ravens co-feeding at their kills.
 This species relationship is generally described as a “species interaction.”
 Can you invent a hypothetical set of data on raven population size in which this relationship would manifest as a statistical interaction?
-Do you think the biological interaction could be linear? Why or why not?
 
 A:  
 I was undert the impression that the author calls "interactions" the higher order terms in a model.
-And the a-priori model is independent from the data, thus no data can "manifest ... interactions".
+And the a-priori model is independent from the data, thus no data can "manifest ... interactions".  
 
-Similarly, “the biological interaction could be linear" depending on it's formulation.
 
+Do you think the biological interaction could be linear? Why or why not?  
+
+A:  
+What is a "biological interaction"?
+Is it linear in terms of which variables?
+Anything can be approximated by a linear model with varying degree of success.
