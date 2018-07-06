@@ -127,11 +127,11 @@ Else, we are multiplaying observed data by prior likelyhood close to zero, resul
 
 
 6H0  
+```{r setup_hard1, results='hide', message=FALSE}
+library(rethinking)
 ```{r setup_hard0}
-d <- read.csv("res/Howell1.csv", header=TRUE, sep=';')
-
-# Nope, no duck typing.
-# d <- as_tibble(d)
+data( Howell1 )
+d <- Howell1
 
 d$age <- (d$age - mean(d$age))/sd(d$age)
 set.seed( 1000 )
@@ -139,15 +139,6 @@ i <- sample(1:nrow(d),size=nrow(d)/2)
 d1 <- d[ i , ]
 d2 <- d[ -i , ]
 
-```{r setup_hard1, results='hide', message=FALSE}
-# Would have certaily been nice if the retrinking package wasn't a bowl of spagetti.
-#source1 <- function(path, fun)
-#{
-#  source(path, local= TRUE)
-#  get(fun)
-#}
-#max.a.posteriori <- source1("res/map.r","map")
-library(rethinking)
 ```
 ```{r setup_hard2}
 poly.mu <- function( order=1 )
