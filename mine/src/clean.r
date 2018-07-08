@@ -64,5 +64,5 @@ is.valid.row = function( dataset=d )
 k=is.valid.row()
 
 
-print('The following part of the database was dropped due to sanity violations(excluding pf violations):')
-print(1-sum(k[k==TRUE])/length(rownames(d)))
+print( 'The following part of the database was dropped due to sanity violations(excluding pf violations):' )
+print( 1 - sum(k[k==TRUE]) / length(rownames(d) ) )
