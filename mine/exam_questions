@@ -1,0 +1,44 @@
+ 1) Association Discovery with apriori-algorithm : what means "association"? The minimum thresholds; the support, confidence values; the apriori-algorithm (with a given order, we join and prune; we generate the rules).
+
+Support is an indication of how frequently the itemset appears in the dataset.
+support - number of occurences OR number of occurences / number of observations.
+
+Any subset of a frequent itemset must be frequent. If {beer, diaper, nuts} is frequent, so is {beer, diaper}.
+
+apriori pruning priciple - don't consider supersets of infrequent sets
+
+apriori algorithm:
+1. generate single element sets of values in the database; prune infrequent ones
+2. generate two element combinations of all non-pruned values, prune infrequent combinations
+3. generate three element combinations, ALL subsets of a candidate combination must be in (2.)
+n. Terminate when no frequent or candidate set can be generated
+
+association - a rule, learned from a database; it shows relationship between variables
+
+Confidence is an indication of how often the rule has been found to be true.
+confidence is conditional probability that a transaction having X also contains Y
+conf(X=>Y) = supp(X and Y) / supp(X)
+
+2) GSP-algorithm: see apriori; different timepoints and concomitance, join.
+GSP (Generalized Sequential Pattern) mining algorithm.
+just as apriori?
+
+
+
+3) Similarity and distance functions: Hamming distance, Manhattan distance, Euclidean Distance (the terms "Edit Distance" and "Earth-Mover distance" should be heard).
+Hamming distance - N1
+Manhattan distance - taxicab distance - sum(diff along every axis)
+Euclidian distance - N2
+edit distance - how many operations are needed to transform n1 into n2
+
+
+4) Unsupervised Learning; Clustering with k-means and Demographic clustering (particularly: creation of the distance matrix)
+
+
+5) Supervised Learning: Classification and Decision Tree-technique (particularly: how is a split made? what is an Error matrix, what means accuracy of a classification? What is the purity of a node/leaf? Can a decision tree have more than 2 splits per node, et cetera).
+
+
+
+
+
+There will be no questions about topic detection, sentiment analysis.
