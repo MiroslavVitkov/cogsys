@@ -68,6 +68,30 @@ if plot:
 
 from sklearn import metrics
 
-####################
-# INSERT CODE HERE #
-####################
+y_pred = clf_svm.predict( X_test )
+print( 'OOB accuracy: ', metrics.accuracy_score( y_test, y_pred ) )
+print( metrics.classification_report( y_test, y_pred, target_names=iris.target_names ) )
+print('???')
+
+
+# #### Exercise 1.2 (ROC curve)
+# helper to plot ROC curves
+def plot_roc_curves(fprs, tprs):
+    fig = plt.figure(figsize=(20,10))
+
+    for fpr, tpr in zip(fprs, tprs):
+        plt.plot(fpr, tpr, label='ROC curve (AUC = %0.2f)' % metrics.auc(fpr, tpr))
+
+    plt.plot([0, 1], [0, 1], 'k--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver operating characteristic')
+    plt.legend(loc="lower right")
+    plt.show()
+
+# fpr, tpr =
+
+# plot the curve
+plot_roc_curves([fpr], [tpr])
