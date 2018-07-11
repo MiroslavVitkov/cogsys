@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+
+plot = False
+
+
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris
 
@@ -22,7 +26,8 @@ plt.xlabel("x1")
 plt.ylabel("x2")
 plt.title('Iris data')
 plt.legend()
-plt.show()
+if plot:
+    plt.show()
 
 # We split the data into a train and test (holdout) set with a split ratio of 75% to 25%.
 from sklearn.model_selection import train_test_split
@@ -54,7 +59,8 @@ fig = plt.figure(figsize=(10, 5))
 ax = fig.add_subplot(111)
 show_decision_function(clf_svm, ax)
 ax.set_title('Decision function of a SVM classifier with gamma = 10, C = 1')
-plt.show()
+if plot:
+    plt.show()
 
 
 # #### Exercise 1.1 (Performance measures)
