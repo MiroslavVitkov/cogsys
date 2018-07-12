@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 
 
-plot = False
-
-
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris
 
@@ -26,8 +23,6 @@ plt.xlabel("x1")
 plt.ylabel("x2")
 plt.title('Iris data')
 plt.legend()
-if plot:
-    plt.show()
 
 # We split the data into a train and test (holdout) set with a split ratio of 75% to 25%.
 from sklearn.model_selection import train_test_split
@@ -59,8 +54,6 @@ fig = plt.figure(figsize=(10, 5))
 ax = fig.add_subplot(111)
 show_decision_function(clf_svm, ax)
 ax.set_title('Decision function of a SVM classifier with gamma = 10, C = 1')
-if plot:
-    plt.show()
 
 
 # #### Exercise 1.1 (Performance measures)
@@ -71,7 +64,8 @@ from sklearn import metrics
 y_pred = clf_svm.predict( X_test )
 print( 'OOB accuracy: ', metrics.accuracy_score( y_test, y_pred ) )
 print( metrics.classification_report( y_test, y_pred, target_names=iris.target_names ) )
-print('???')
+print('I would pick the f1 score, because it condenses both precision and recall.')
+print('All the numbers coiside in our example.')
 
 
 # #### Exercise 1.2 (ROC curve)
@@ -80,7 +74,8 @@ def plot_roc_curves(fprs, tprs):
     fig = plt.figure(figsize=(20,10))
 
     for fpr, tpr in zip(fprs, tprs):
-        plt.plot(fpr, tpr, label='ROC curve (AUC = %0.2f)' % metrics.auc(fpr, tpr))
+        auc = metrics.roc_auc_score( y_test, y_pred )
+        plt.plot(fpr, tpr, label='ROC curve (AUC = %0.2f)' % auc)
 
     plt.plot([0, 1], [0, 1], 'k--')
     plt.xlim([0.0, 1.0])
@@ -89,9 +84,10 @@ def plot_roc_curves(fprs, tprs):
     plt.ylabel('True Positive Rate')
     plt.title('Receiver operating characteristic')
     plt.legend(loc="lower right")
-    plt.show()
 
-# fpr, tpr =
+fpr, tpr, threshold = metrics.roc_curve(y_test, y_pred)
 
 # plot the curve
 plot_roc_curves([fpr], [tpr])
+
+plt.show()
