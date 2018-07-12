@@ -90,4 +90,39 @@ fpr, tpr, threshold = metrics.roc_curve(y_test, y_pred)
 # plot the curve
 plot_roc_curves([fpr], [tpr])
 
+
+# #### Exercise 1.3 (Model comparison)
+# Train four more SVM models on the training data by varying the regularization parameter $C$ (the gamma parameter can be set to 10 again).
+# Put the models into a list 'clfs' using the append method.
+# You can add a name to each classifier by setting clf.name = "some description" to keep track of the configuration.
+
+
+clfs = []
+for c in [ 0.1, 0.5, 1, 10 ]:
+    clf_svm = SVC( gamma=10, C=c )
+    clf_svm.fit( X_train, y_train )
+    clf_svm.name = 'gamma=10, C=' + str(c)
+    clfs.append( clf_svm )
+
+####################
+# INSERT CODE HERE #
+####################
+
+
+# Let's have a look at the decision functions of the four classifiers...
+# visualize the decision functions of the four different classifiers
+fig, axes = plt.subplots(2, 2, figsize=(20, 10))
+
+for clf, ax in zip(clfs, axes.ravel()):
+    show_decision_function(clf, ax)
+    ax.set_title(clf.name)
+
+
+# ... and draw the ROC curves.
+
+
+#for clf in clfs:
+#    fpr, tpr, threshold = metrics.roc_curve(y_test, y_pred)
+#    plot_roc_curves([fpr], [tpr])
+
 plt.show()
