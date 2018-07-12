@@ -85,10 +85,13 @@ def plot_roc_curves(fprs, tprs):
     plt.title('Receiver operating characteristic')
     plt.legend(loc="lower right")
 
-fpr, tpr, threshold = metrics.roc_curve(y_test, y_pred)
 
-# plot the curve
-plot_roc_curves([fpr], [tpr])
+def plot_roc( y_true, y_pred ):
+    fpr, tpr, threshold = metrics.roc_curve( y_true, y_pred )
+    plot_roc_curves([fpr], [tpr])
+
+
+plot_roc( y_test, y_pred )
 
 
 # #### Exercise 1.3 (Model comparison)
@@ -121,8 +124,9 @@ for clf, ax in zip(clfs, axes.ravel()):
 # ... and draw the ROC curves.
 
 
-#for clf in clfs:
-#    fpr, tpr, threshold = metrics.roc_curve(y_test, y_pred)
-#    plot_roc_curves([fpr], [tpr])
+for clf in clfs:
+    y_pred = clf.predict( X_test )
+    plot_roc( y_test, y_pred)
+
 
 plt.show()
