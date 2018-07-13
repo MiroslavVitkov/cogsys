@@ -182,11 +182,11 @@ class NCV:
         tr = np.array( list( zip( X_train, y_train ) ) )
         c = self.calc_hyperparams( tr )
 
-        y_pred = fit_model( tr, c).predict( X_test )
+        y_pred = self.fit_model( tr, c).predict( X_test )
         print( 'OOB accuracy: ', metrics.accuracy_score( y_test, y_pred ) )
         print( metrics.classification_report( y_test, y_pred, target_names=iris.target_names ) )
 
-        m = fit_model( data=self._all_data, c=c )
+        m = self.fit_model( data=self._all_data, c=c )
         return m
 
 
