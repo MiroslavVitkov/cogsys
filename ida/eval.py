@@ -229,7 +229,7 @@ class NCV:
 
     def calc_hyperparams( self
                         , dataset
-                        , c_grid=np.logspace( start=0, stop=2, num=50 ) ):
+                        , c_grid=np.logspace( start=0, stop=2, num=50 ) - 1 ):  # [0-99]
         '''Perform a grid search in hyperparameter space.'''
         risk = []
         for c in c_grid:
