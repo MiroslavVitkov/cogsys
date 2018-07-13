@@ -5,7 +5,7 @@
 
 
 source( "read.r" )
-d = read.dataset( print.rows=10 )
+d = read.dataset()
 
 
 # Valid times are those between the first and last measuremet.
@@ -62,7 +62,5 @@ is.valid.row = function( dataset=d )
     return( v )
 }
 k=is.valid.row()
-
-
-print( 'The following part of the database was dropped due to sanity violations(excluding pf violations):' )
+print( 'The following part of the database would be dropped due to sanity violations(excluding pf violations):' )
 print( 1 - sum(k[k==TRUE]) / length(rownames(d) ) )
