@@ -129,4 +129,123 @@ for clf in clfs:
     plot_roc( y_test, y_pred)
 
 
+# ## 2. Hyperparameter Tuning
+# Many models have hyperparameters, parameters that can't directly be estimated from the data.
+# They have to be manually tuned by the practioner, because there is no analytical formula available to calculate an appropriate value.
+# One example is the regularization parameter $C$ in SVMs.
+#
+# #### Exercise 2.1 (Nested cross-validation)
+#
+# Train a SVM classifier for the detection of iris versicolor again, but this time with a proper tuning of the regularization parameter $C$
+# (you may set the gamma parameter to 10 again).
+# Select a reasonable range of parameter values for $C$ and implement a nested cross-validation (as shown on the slides) by yourself.
+
+# You can use the following helper function that creates a list of masks. Each mask can be used as an index set to select the test samples.
+# The function accepts the number of samples *num_samples* in the dataset and the desired number of folds *k* as input parameters.
+# Since the data is sorted by the labels the k-fold CV will likely have trouble with class imbalances in the some cases.
+# So you should randomly shuffle the data before applying the masks.
+
+# helper function to create k-fold train-test-splits
+def create_kfold_mask(num_samples, k):
+    masks = []
+    fold_size = num_samples / k
+    for i in range(k):
+        mask = np.zeros(num_samples, dtype=bool)
+        mask[int(i*fold_size):int((i+1)*fold_size)] = True
+        masks.append(mask)
+    return masks
+
+# visualization of the splits created by 'create_kfold_mask'
+masks = create_kfold_mask(150, 10)
+plt.matshow(masks)
+
+
+class NCV:
+    '''Nested Cross-Validation.'''
+    from sklearn.metrics import mean_squared_error
+    from sklearn.model_selection import train_test_split
+
+
+    def __init__( self, X, y, loss=mean_squared_error, k=10 ):
+        self._all_data = np.array( list( zip( X, y ) ) )
+        np.random.shuffle( self._all_data )
+
+        self._loss = loss
+
+        # Number of groups in the inner loop.
+        self._k = k
+
+
+    def train( self ):
+        X, y = zip( *self._all_data )
+        X_train, X_test, y_train, y_test = train_test_split( X, y, test_size=0.2 )
+        tr = np.array( list( zip( X_train, y_train ) ) )
+        c = self.calc_hyperparams( tr )
+
+        y_pred = fit_model( tr, c).predict( X_test )
+        print( 'OOB accuracy: ', metrics.accuracy_score( y_test, y_pred ) )
+        print( metrics.classification_report( y_test, y_pred, target_names=iris.target_names ) )
+
+        m = fit_model( data=self._all_data, c=c )
+        return m
+
+
+    @staticmethod
+    def fit_model( data, c, g=10 ):
+        m = SVC( gamma=g, C=c )
+        X, y = zip( *data )
+        m.fit( X, y )
+        return m
+
+
+    @staticmethod
+    def calc_risk( y_pred, y_true, loss ):
+        '''Empirical risk on a sample.'''
+        assert len( y_pred ) == len( y_true )
+        return ( 1 / len(y) ) * sum([ loss( y_pred, y_true ) ])
+
+
+    @classmethod
+    def calc_OOB_risk( cls, train, test, loss, c=1, g=10 ):
+        '''Train a model on a dataset. Return a risk estimate.'''
+        m = cls.fit_model( train, c, g )
+        X, y = zip( *test )
+        pred = m.predict( X )
+        r = cls.calc_risk( pred, y, loss )
+        return r
+
+
+    @staticmethod
+    def calc_crossval_risk( dataset, body, k ):
+        '''Apply `body` to overlapping batches of the dataset.'''
+        risk = []
+        for mask in create_kfold_mask( len( dataset ), k ):
+            tr = dataset[ ~ mask ]
+            te = dataset[ mask ]
+            r = body( train=tr, test=te )
+            risk.append( r )
+        return sum(risk) / len(risk)
+
+
+    def calc_hyperparams( self
+                        , dataset
+                        , c_grid=np.logspace( start=0, stop=2, num=50 ) ):
+        '''Perform a grid search in hyperparameter space.'''
+        risk = []
+        for c in c_grid:
+            body = lambda train, test: self.calc_OOB_risk( train=train, test=test
+                                                         , loss=self._loss, c=c, g=10 )
+            r = self.calc_crossval_risk( dataset, body, self._k )
+            risk.append( r )
+
+        best = c_grid[ np.argmax( risk ) ]
+        return best
+
+
+
+ncv = NCV( X_versi, y_versi )
+m = ncv.train()
+print( m )
+
+
 plt.show()
