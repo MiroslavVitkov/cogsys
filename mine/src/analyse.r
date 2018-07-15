@@ -9,14 +9,8 @@ library( tidyverse )
 
 calc.cor.matrix = function( dataset, method=c('pearson', 'kendall', 'spearman') )
 {
-    m = c()
-    for( m in methods )
-    {
-        scores = cor( d[2:ncol(dataset)], method=m )
-        m = c( m, scores )
-    }
-
-    return( m )
+    score = cor( dataset[1:ncol(dataset)], method=method )
+    return( score )
 }
 
 
