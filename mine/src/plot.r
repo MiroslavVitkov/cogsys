@@ -25,14 +25,18 @@ calc.cor.matrix( numbers, method='spearman') %>%
 
 # Pretend that these are corelation scores.
 calc.kl.matrix( numbers ) %>%
-    print %>%
     ( function( mat )  1 / mat ) %>%
+    log %>%
+    ( function( mat )  mat - min(mat) ) %>%
+    ( function( mat )  mat / max(abs(mat)) ) %>%
+    corrplot( method='circle', order='hclust' )
+
+
+calc.dist.mat( numbers, method='euclidean' ) %>%
+    ( function( mat )  1 / mat ) %>%
+    ( function( mat )  { mat[mat == Inf] = max(mat[is.finite(mat)]); mat } ) %>%
     log %>%
     ( function( mat )  mat - min(mat) ) %>%
     ( function( mat )  mat / max(abs(mat)) ) %>%
     print %>%
     corrplot( method='circle', order='hclust' )
-
-
-
-

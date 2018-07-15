@@ -22,8 +22,8 @@ calc.kl.matrix = function( dataset, smooth=.smooth )
     {
         for( j in 1:features )
         {
-            d1 = pull( d, i ) %>% .pdf.discrete
-            d2 = pull( d, j ) %>% .pdf.discrete %>% smooth
+            d1 = pull( dataset, i ) %>% .pdf.discrete
+            d2 = pull( dataset, j ) %>% .pdf.discrete %>% smooth
             score = .KL.discrete( d1, d2 )
 
             kl[i, j] = score
@@ -37,6 +37,32 @@ calc.kl.matrix = function( dataset, smooth=.smooth )
 }
 
 
+# By default calculates Euclidean distance norm.
+calc.dist.mat = function( dataset
+                        , method=c('euclidean', 'maximum', 'manhattan'
+                                  , 'canberra', 'binary', 'minkowski')
+                        , p=2 )
+{
+    features = ncol( dataset )
+    ret = matrix( 0, nrow=features, ncol=features )
+    for( i in 1:features )
+    {
+        for( j in 1:features )
+        {
+            d1 = pull( dataset, i ) %>% scale
+            d2 = pull( dataset, j ) %>% scale
+            score = .euc.dist( d1, d2 )
+
+            ret[i, j] = score
+        }
+    }
+
+    colnames( ret ) = colnames( dataset )
+    rownames( ret ) = colnames( dataset )
+
+    return( ret )
+}
+
 
 '%=%' = function( a, b )
 {
@@ -45,6 +71,13 @@ calc.kl.matrix = function( dataset, smooth=.smooth )
     return( eq )
 }
 
+
+.euc.dist <- function( x1, x2 )
+{
+    # score = dist( rbind(d1, d2), method=method, p=p )
+    d = sqrt( sum( (x1 - x2) ^ 2 ) )
+    return( d )
+}
 
 # The discrete equivelent of the probability density function.
 .pdf.discrete = function( vec, buckets=length( base::unique( vec ) ) )
@@ -64,7 +97,7 @@ stopifnot( .pdf.discrete( c(2, 2, 2, 2, 5) ) == c(0.8, 0.2) )
 stopifnot( .pdf.discrete( -7 ) == c( 1 ) )
 
 
-# k - totatal probability mass to evenly distribute, values: (0 - inf)
+# k - totatal probability mass to evenly distribute; values: (0 - inf)
 .smooth = function( vec, k=0.1 )
 {
     stopifnot( k >= 0 )
