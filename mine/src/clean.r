@@ -61,6 +61,6 @@ is.valid.row = function( dataset=d )
 
     return( v )
 }
-k=is.valid.row()
 print( 'The following part of the database would be dropped due to sanity violations(excluding pf violations):' )
-print( 1 - sum(k[k==TRUE]) / length(rownames(d) ) )
+print( 1 - (nrow(subset( d, is.valid.row( d ) )) / nrow(d)) )
+
