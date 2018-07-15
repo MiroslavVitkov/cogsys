@@ -24,15 +24,14 @@ calc.kl.matrix = function( dataset, smooth=.smooth )
         {
             d1 = pull( d, i ) %>% .pdf.discrete
             d2 = pull( d, j ) %>% .pdf.discrete %>% smooth
-
             score = .KL.discrete( d1, d2 )
 
             kl[i, j] = score
         }
     }
 
-    colnames(kl) = colnames(d)
-    rownames(kl) = colnames(d)
+    colnames( kl ) = colnames( dataset )
+    rownames( kl ) = colnames( dataset )
 
     return( kl )
 }

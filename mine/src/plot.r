@@ -2,6 +2,7 @@
 
 
 library( 'corrplot' )
+library( 'tidyverse' )
 
 
 source( 'clean.r' )
@@ -13,8 +14,25 @@ d = subset( d, is.valid.row( d ) )
 numbers = d %>% select( -c(time) )
 
 
-cor.mat = calc.cor.matrix( numbers, method='pearson')
-kl.mat = calc.kl.matrix( numbers )
+calc.cor.matrix( numbers, method='pearson') %>%
+    corrplot( method='circle', order='hclust', addrect=3 )
 
-corrplot( cor.mat, method='circle', order='hclust', addrect=3 )
+calc.cor.matrix( numbers, method='spearman') %>%
+    corrplot( method='circle', order='hclust', addrect=3 )
+
+#calc.cor.matrix( numbers, method='kendall') %>%
+#    corrplot( method='circle', order='hclust', addrect=3 )
+
+# Pretend that these are corelation scores.
+calc.kl.matrix( numbers ) %>%
+    print %>%
+    ( function( mat )  1 / mat ) %>%
+    log %>%
+    ( function( mat )  mat - min(mat) ) %>%
+    ( function( mat )  mat / max(abs(mat)) ) %>%
+    print %>%
+    corrplot( method='circle', order='hclust' )
+
+
+
 
