@@ -14,7 +14,7 @@ calc.cor.matrix = function( dataset, method=c('pearson', 'kendall', 'spearman') 
 }
 
 
-calc.kl.matrix = function( dataset, smooth=.shooth )
+calc.kl.matrix = function( dataset, smooth=.smooth )
 {
     features = ncol( dataset )
     kl = matrix( 0, nrow=features, ncol=features )
@@ -25,7 +25,7 @@ calc.kl.matrix = function( dataset, smooth=.shooth )
             d1 = pull( d, i ) %>% .pdf.discrete
             d2 = pull( d, j ) %>% .pdf.discrete %>% smooth
 
-            score = KL.discrete( d1, d2 )
+            score = .KL.discrete( d1, d2 )
 
             kl[i, j] = score
         }
@@ -38,12 +38,28 @@ calc.kl.matrix = function( dataset, smooth=.shooth )
 }
 
 
+
+'%=%' = function( a, b )
+{
+    e = 1e-10
+    eq = a - b < e
+    return( eq )
+}
+
+
 # The discrete equivelent of the probability density function.
 .pdf.discrete = function( vec, buckets=length( base::unique( vec ) ) )
 {
     h = hist( x=vec, breaks=buckets, plot=FALSE )
     dist = h$counts / sum( h$counts )
-    return( dist )
+
+    if( sum( dist ) != 1 )
+    {
+        dist = dist / sum(dist)
+    }
+    stopifnot( sum( dist ) == 1 )
+
+   return( dist )
 }
 stopifnot( .pdf.discrete( c(2, 2, 2, 2, 5) ) == c(0.8, 0.2) )
 stopifnot( .pdf.discrete( -7 ) == c( 1 ) )
@@ -78,8 +94,8 @@ stopifnot( .pad( c(0, 1, 2, 3), 7 ) == c(0, 1, 2, 3, 0, 0, 0) )
 .KL.discrete = function( p, q ) 
 {
     # The K-L divergence is only defined if P and Q both sum to 1
-    stopifnot( sum( p ) == 1 )
-    stopifnot( sum( q ) == 1 )
+    stopifnot( sum( p ) %=% 1 )
+    stopifnot( sum( q ) %=% 1 )
 
     # and if Q(i) > 0 for any i such that P(i) > 0.
     p = .pad( p, length(q) ) %>% .smooth
@@ -93,3 +109,4 @@ stopifnot( .pad( c(0, 1, 2, 3), 7 ) == c(0, 1, 2, 3, 0, 0, 0) )
 }
 stopifnot( .KL.discrete( c(0.1, 0.3, 0.45, 0.15), c(0.1, 0.3, 0.45, 0.15) ) == 0 )
 stopifnot( .KL.discrete( c(0.1, 0.3, 0.45, 0.15), c(0.7, 0.1, 0.1, 0.1) ) != 0 )
+
