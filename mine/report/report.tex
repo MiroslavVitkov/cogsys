@@ -50,7 +50,7 @@ Explored are pairs of features in the `Household Power Consumption database` and
 Croux et al\cite{q4} demonstrate that a two variable Spearman or Kendall correlation measure is resistant to outliers.
 \para
 Chujai et al\cite{q1} use the same dataset to train an ARIMA regression algorithm.
-They fail to mention the misleading dataset precision, adressed later in this work.
+They fail to mention the misleading dataset precision, addressed later in this work.
 
 % ========================================================
 \section{Methodology}
@@ -59,7 +59,7 @@ They fail to mention the misleading dataset precision, adressed later in this wo
 The source code is available at \url{https://github.com/MiroslavVitkov/cogsys/tree/master/mine}
 
 \subsection{Pearson correlation coefficient}
-This is the widely used 'regression coeeficient'\cite{q8} applied to a sample:
+This is the widely used 'regression coefficient'\cite{q8} applied to a sample:
 $$ r_{xy} = \frac{\sum(x_i - \overline{x})(y_i - \overline{y})}
                  {\sqrt{\sum(x_i - \overline{x})^2*\sum(y_i - \overline{y})^2}} $$
 \begin{figure}[!htp]
@@ -88,8 +88,8 @@ $$ \tau = \frac{({number of concordant points}-{number of discordant points})}
                  {n(n-1)/2} $$
 \para
 This method turned out to be significantly slower than any of the other 4.
-Consequenctly, here is presented a diagram of only a small part of the dataset.
-The sampling is performed without randomization.
+Consequently, here is presented a diagram of only a small part of the dataset.
+The sampling is performed without randomisation.
 
 \begin{figure}[!htp]
   \centering
@@ -99,12 +99,12 @@ The sampling is performed without randomization.
 
 \subsection{Proximity}
 The previous 3 scores have range [-1, 1] with 0 meaning "largest dissimilarity".
-The next 2 estimators are a pseudodistance and a distance.
+The next 2 estimators are a pseudo-distance and a distance.
 Thus their range is [0, inf) with 0 meaning "smallest dissimilarity".
 \para
 In order to arrive at comparable measures, a function \code{f()} needs to be designed.
 \code{f} should map the latter interval into the first.
-Thus all five measures will be comparable and plottable by the same tools.
+Thus all five measures will be comparable and plotable by the same tools.
 \para
 The requirements for such a function would be:
 \begin{enumerate}
@@ -112,7 +112,7 @@ The requirements for such a function would be:
     \item{work on a discrete sample}
 \end{enumerate}
 \para
-The chosen solution for this project is a chain of simple funtions:
+The chosen solution for this project is a chain of simple functions:
 $$ f(x) = scale(trans(log(clamp(x^{-1})))) $$
 , where \\
 $ clamp() $ - replace \code{Inf} with a large number; is first trained on the data  \\
@@ -161,7 +161,7 @@ Power factor is defined\cite{q6} as follows:
 $$ {pf} = \frac{P}{S} $$
 ,where:  
 P, [W] - real power  
-S, [VA] - aparent power  
+S, [VA] - apparent power  
 
 Plugging the numbers in:
 $$ {pf} = P / (U * I) = $$
@@ -173,7 +173,7 @@ And ${pf}$ is defined on the interval [-1, 1]\cite{q6}.
 As is well known,  "Trailing zeros to the right of the decimal ARE significant"\cite{q7}.
 In the above example, there are 3 digits of accuracy, which are fixed at 0.
 Had those zeroes not been written, the dataset would have claimed less precision.
-Now, however, it is inacurate and thus internally inconsistent.
+Now, however, it is inaccurate and thus internally inconsistent.
 
 \subsection{Cleaning the data}
 1.251844\% Of the input data has been dropped because it is missing or an outlier.
@@ -183,11 +183,11 @@ Now, however, it is inacurate and thus internally inconsistent.
 \section{Conclusion}
 It was noticed that the used dataset claims higher precision that it actually provides.
 \para
-All plots show the obvius interconnection between \code{active4.W, active.W, current.A}.
-However the Kullback–Leibler divergence makes different and veague predictions.
+All plots show the obvious interconnection between \code{active4.W, active.W, current.A}.
+However the Kullback–Leibler divergence makes different and vague predictions.
 \para
 Further work should involve auto-correlations and time-shifted cross-correlations and dependencies.
-Kullback–Leibler divergence with previusly median-aligned distributions and with various smoothing
+Kullback–Leibler divergence with previously median-aligned distributions and with various smoothing
 % ========================================================
 
 \begin{thebibliography}{9}
