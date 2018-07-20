@@ -1,39 +1,48 @@
 \documentclass{article}
 
-\newcommand{\para}[0]{\par\vspace{0.0cm}\noindent}
-\newcommand{\define}[2]{\textbf{#1} - {#2}.  \\}
+
+\usepackage{mathtools}
+
+
+\newcommand{\para}[0]{\par\vspace{0.2cm}\noindent}
+\newcommand{\define}[2]{\textbf{#1} - {#2}.  \para}
 
 
 \begin{document}
 \section{Models, Data, Learning Problems}
 \subsection{Taxonomy of learning problems}
-\define{Random variable}{a (vector) variable whose possible values are outcomes of a random phenomenon}
-\define{Instance}{a single outcome}
-\para
-\define{Model}{a prediction mechanism; a function that maps an instance to a value of the target variable}
-\para
-\define{Linear regression model}{$y_\theta(x) = x^T \theta + \theta_0$}
-\para
-\define{Unsupervised learning}{find structure in data}
-\define{Supervised learning}{find the function most likely to have generated the training data}
-\define{Reinforcement learning}{control a dynamic system; the model performs experiments(exploration) while keeping the system operating nominally(exploitation)}
+\define{random variable}
+           {a (vector) variable whose possible values are outcomes of a random phenomenon}
+\define{instance}
+           {a single outcome}
+\define{model}
+           {a prediction mechanism; a function that maps an instance to a value of the target variable}
+\define{linear regression model}
+           {$y_\theta(x) = x^T \theta + \theta_0$}
+\define{unsupervised learning}
+           {find structure in data}
+\define{supervised learning}
+           {find the function most likely to have generated the training data}
+\define{reinforcement learning}
+           {control a dynamic system; the model performs experiments(exploration) while keeping the system operating nominally(exploitation)}
 
 
 \subsection{Models}
-%Loss: $l(y_\theta(x_i), y_i)$
-%      measures agreement between model predictions and trur labels
+\define{loss}
+           {$l(y_\theta(x_i), y_i)$ - measures agreement between model predictions and true labels}
+\define{risk}
+           {$\hat R(\theta) = 1/n \sum_{i=1}^n l(y_\theta(x_i), y_i)$ - expected loss over all training data $T_n$}
+\define{zero-one loss}
+           {$l_{0/1}$ - can be parametrised for false positive and false negative costs}
+$$l_{c_FP, c_FN}(x_i) =
+  \begin{cases}
+    0         & \quad \mathrm{if } f(x_i) = y_i  \\
+    c_{FP}    & \quad \mathrm{if } x_i = +1, y_i = -1  \\
+    c_{FN}    & \quad \mathrm{if } x_i = -1, y_i = +1  \\
+  \end{cases}$$
 
-%Risk: expected loss over all training data Tn: $R^\hat(\theta) = 1/n \sum_{i=1}^n l(y_\theta(x_i), y_i)$
 
-%Zero-one loss $l_{0/1}$. Can be parametrised for false positive and false negative costs: $l_{c_FP, c_FN} = 0, c_FP or c_FN$
-%\[ f(n) =
-%  \begin{cases}
-%    n/2       & \quad \text{if } n \text{ is even}\\
-%    -(n+1)/2  & \quad \text{if } n \text{ is odd}
-%  \end{cases}
-%\]
-
-%Classification
+\subsection{Classification}
 %Regression - l2
 
 
@@ -41,10 +50,10 @@
 
 %Learning is an _optimization_ problem, because it can produce zero, one or many best solutions.
 
-%regularizer - expresses prior knowledge, does not depend on the data.
-%             l0 - count of nonzero parameters
-%             l1 - sum
-%             l2 - sum of squares
+\define{regularizer}{expresses prior knowledge, does not depend on the data.  \\
+    $l0$ - count of nonzero parameters  \\
+    $l1$ - sum  \\
+    $l2$ - sum of squares}
 
 %optimization criterion: $R^\hat(\theta) = 1/n \sum_{i=1}^n l(y_\theta(x_i), y_i) + \lambda \sigma (\theta)$
 
@@ -53,9 +62,9 @@
 %    select among many equally good solutions to the loss
 %    avoid model sensitivity to training data (stability)
 
-%OOB performance
-%    $R(\theta) = \sum_y \int l(y_\theta(x), y) p(x, y) dx$
-%    where $p(x, y)$ true generating joint probability distribution of $y$
+\define{OOB performance}{
+    $$R(\theta) = \sum_y \int l(y_\theta(x), y) p(x, y) dx$$
+    where $p(x, y)$ - true generating joint probability distribution}
     
 
 \end{document}
