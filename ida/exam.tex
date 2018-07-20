@@ -30,10 +30,10 @@
 \subsection{Models}
 \define{loss}
            {$l(y_\theta(x_i), y_i)$ - measures agreement between model predictions and true labels}
-\define{risk}
+\define{empirical risk}
            {$\hat R(\theta) = 1/n \sum_{i=1}^n l(y_\theta(x_i), y_i)$ - expected loss over all training data $T_n$}
 \define{zero-one loss}
-           {$l_{0/1}$ - can be parametrised for false positive and false negative costs}
+           {$l_{0/1}$ - can be parameterised for false positive and false negative costs}
 $$l_{c_FP, c_FN}(x_i) =
   \begin{cases}
     0         & \quad \mathrm{if } f(x_i) = y_i  \\
@@ -43,28 +43,37 @@ $$l_{c_FP, c_FN}(x_i) =
 
 
 \subsection{Classification}
-%Regression - l2
+\define{searching for a model}
+           {$\theta^* = {argmin}_\theta \sum_{i=1}^n \hat R$ - unregularized, this can have 0, 1 or many solutions}
 
+\define{regularizer}
+           {expresses prior knowledge, does not depend on the data  \\
+            $l0$ - count of nonzero parameters  \\
+            $l1$ - sum  \\
+            $l2$ - sum of squares}
 
-%Searching for a model - $\theta*$ which minimises $R\hat$
+\define{regularized empirical risk}
+           {$\hat R(\theta) = \frac{1}{n} \sum_{i=1}^n l(y_\theta(x_i), y_i) + \lambda \Omega (\theta)$}
 
-%Learning is an _optimization_ problem, because it can produce zero, one or many best solutions.
+Justification for using regularizers:
+\begin{itemize}
+    \item{regularized loss model equivalent to MAP model in Bayesian statistics}
+    \item{lower theoretical upper bond on OOB error}
+    \item{select among many equally good solutions to the loss}
+    \item{avoid model sensitivity to training data (stability)}
+\end{itemize}
 
-\define{regularizer}{expresses prior knowledge, does not depend on the data.  \\
-    $l0$ - count of nonzero parameters  \\
-    $l1$ - sum  \\
-    $l2$ - sum of squares}
-
-%optimization criterion: $R^\hat(\theta) = 1/n \sum_{i=1}^n l(y_\theta(x_i), y_i) + \lambda \sigma (\theta)$
-
-%Justification for using regularizers:
-%    lower theoretical  upper bond on OOB error
-%    select among many equally good solutions to the loss
-%    avoid model sensitivity to training data (stability)
-
-\define{OOB performance}{
+\define{expected OOB loss}{
     $$R(\theta) = \sum_y \int l(y_\theta(x), y) p(x, y) dx$$
     where $p(x, y)$ - true generating joint probability distribution}
-    
+
+A trivial way to obtain full in-band accuracy - remember all training instances in a table.  \\
+\par
+Model evaluation methods:
+\begin{itemize}
+    \item{training and test datasets}
+    \item{N-fold cross validation.}
+\end{itemize}
+
 
 \end{document}
