@@ -9,18 +9,27 @@
 
 
 \begin{document}
-\section{Models, Data, Learning Problems}
-\subsection{Taxonomy of learning problems}
+\section{Stats refresher}
 \define{random variable}
            {a (vector) variable whose possible values are outcomes of a random phenomenon}
+\define{joint distribution}
+           {n-dimensional probability distribution over n variables}
+\define{marginal distribution}
+           {a joint distribution over a subset of the variables; the ignored variables are summed over}
+
+
+\section{Models, Data, Learning Problems}
+\subsection{Taxonomy of learning problems}
 \define{instance}
-           {a single outcome}
+           {a random variable value; a specific outcome}
 \define{model}
            {a prediction mechanism; a function that maps an instance to a value of the target variable}
 \define{linear regression model}
            {$y_\theta(x) = x^T \theta + \theta_0$}
 \define{unsupervised learning}
-           {find structure in data}
+           {find structure in data  \\
+            find attributes, which describe the data well  \\
+            anomaly detection}
 \define{supervised learning}
            {find the function most likely to have generated the training data}
 \define{reinforcement learning}
@@ -30,6 +39,8 @@
 \subsection{Models}
 \define{loss}
            {$l(y_\theta(x_i), y_i)$ - measures agreement between model predictions and true labels}
+\define{empirical risk}
+           {expected loss under an assumed distribution}
 \define{empirical risk}
            {$\hat R(\theta) = 1/n \sum_{i=1}^n l(y_\theta(x_i), y_i)$ - expected loss over all training data $T_n$}
 \define{zero-one loss}
@@ -48,9 +59,9 @@ $$l_{c_FP, c_FN}(x_i) =
 
 \define{regularizer}
            {expresses prior knowledge, does not depend on the data  \\
-            $l0$ - count of nonzero parameters  \\
-            $l1$ - sum  \\
-            $l2$ - sum of squares}
+            $l0$ - count of nonzero parameters, rarely used  \\
+            $l1$ - favours sparse models  \\
+            $l2$ - prevents any signle parameter from becoming too important}
 
 \define{regularized empirical risk}
            {$\hat R(\theta) = \frac{1}{n} \sum_{i=1}^n l(y_\theta(x_i), y_i) + \lambda \Omega (\theta)$}
@@ -74,6 +85,100 @@ Model evaluation methods:
     \item{training and test datasets}
     \item{N-fold cross validation.}
 \end{itemize}
+
+
+\section{Problem Analysis and Data Preprocessing}
+requirements - an interview may be needed before a final specification
+
+supervised learning - classification, regression, ordinal regression, structural prediction, rankings, recommendation
+unsupervised learning - clustering, feature learning, anomaly detection
+Many others:
+    semi-supervised learnign
+    supervised clustering
+    etc.
+
+Batch learning versus online learning.
+
+Data availability challanges
+number of data: too few? too many for a single cpu main memory??
+number of attributes: too few? too many? sparse?
+quality: missing values? erroneus values? measurement error?
+
+Representation properties of data
+number of classes 2 vs 50 000
+class ratio - balanced vs rare classes
+$p_train(x) = p_application(x)$ - same generating process
+$p_train(y|x) = p_application(y|x)$ - same labeling process
+is the training sample representative of class frequency? else we are operating uder 'covariate shift'
+data getting old
+separate deta sources with different quality measures
+
+\define{data warehouse}
+           {a database which has been optimised for analytic processes, instead of for transactional processes}
+
+\define{sequence}
+           {a set of points such that every point is dependent on one other 'previous' point plust the points it depends on}
+
+\subsection{Data integration} challanges
+    format and measurement units
+    idntify same/similar attributes in the different databases
+    conflicts
+    redundency
+
+Encoding categorical variables for a linear model $y_i = x_i \theta$ - it expects only numbers
+    ordinal values - go ahead
+    cathegorical - encode one-hot, otherwise we are making assumption or orderness
+
+\define{TF representation}
+           {term frequency - a set of \{word:count\}  \\
+            possibly trimmed below e.g. f=3}
+
+\define{TFIDF representation}
+           {problem: terms that occur often (or, and, is) carry little semantic power  \\
+            idea - assign lower weights to frequent terms  \\
+            inverse document frequency = log(\# documents / \# documents that contain the term)}
+ %           $$ TFIDF(t) = \frac{1}{|t|} = \log \frac{N}{n_T}  $$}
+
+%$$
+%TFIDF(t) = \frac{1}{|t|} 
+% \begin{pmatrix}
+%  TF({term}_1) * IDF({term}_1)  \\
+%  \vdots  \\
+%  TF({term}_n) * IDF({term}_n)  \\
+% \end{pmatrix}
+%$$
+
+problem - no structure information is preserved
+          one solution - n-grams
+              - one attribute per n-tupple
+              - large dimention, but mostly sparse
+
+We should normalize input data, because else the large weights on small valued variables will be forbidden by the regularizer.
+
+Feature normalization
+    min/max
+    z-score
+    decimal scaling
+    log scaling
+
+\subsection{Introducing new features}(engineering of new features) as combinations of the old ones, which the model doesn't know
+e.g. polynomial kernels consider all polynomials of the input variables, but linear models don't
+
+missing values - some classes might exhibit missing values more often e.g. user provided credit rating
+
+\subsection{handling missing, erroneus values}
+    delete instances (if few) or attributes(if almost always missing)
+    add a value 'missing'
+    or introduce a binary attribute $val_missing$
+    interpolate - class specific mean/median; or infer most likely value
+
+identifying erroneus values:
+    binning or clustering - small resulting sets could be outliers
+
+\subsection{feature selection}
+    PCA
+    foreward/backward elimination - try model with 1 attribute, test, train with 2 attributes, test, if better continue
+    for a linear model - train a model on all attributes, delete attributes with smallest weights, retrain
 
 
 \end{document}
