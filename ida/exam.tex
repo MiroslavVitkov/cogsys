@@ -22,7 +22,7 @@
 \define{marginal distribution}
            {a joint distribution over a subset of the variables; the ignored variables are summed over}
 \define{information entropy}
-           {the average rate at which information is produced by a stochastic source of data}
+           {the average rate at which information is produced by a stochastic source of data; or the expected information of a message}
 $$ H(X) = - \sum p(x_i) \log p(x_i) \text{,  [bits, nats, bans]}$$
 \para
 In the case of $p(x_i) = 0$ for some $i$, the value of the corresponding summand $0 \log(0)$ is taken to be 0, which is consistent with the limit:
@@ -34,7 +34,7 @@ $$ \lim_{p \to 0+} p \log(p) = 0$$
            {a random variable value; a specific outcome}
 \define{model}
            {a prediction mechanism; a function that maps an instance to a value of the target variable}
-\define{linear regression model}
+\define{linear model - defines a plain in n-dimensional space}
            {$y_\theta(x) = x^T \theta + \theta_0$}
 \textbf{unsupervised learning}
            \begin{itemize}
@@ -108,8 +108,7 @@ Data availability challenges
     \item{number of attributes: too few? too many? sparse?}
     \item{quality: missing values? erroneous values? measurement error?}
 \end{itemize}
-
-
+\par
 Data integration challenges
 \begin{itemize}
     \item{format and measurement units}
@@ -202,6 +201,7 @@ Some classes might exhibit missing values more often then others e.g. user provi
 
 
 \section{Decision trees}
+\subsection{Introduction}
 \define{test node}
            {tests one attribute}
 \define{edge}
@@ -210,8 +210,106 @@ Some classes might exhibit missing values more often then others e.g. user provi
            {contains a prediction}
 
 Advantages:
-    understandable to a domain expert
-    fast predictions
-    nonlinear model - thus can represent nonlinear functions
+\begin{itemize}
+    \item{understandable to a domain expert}
+    \item{fast predictions}
+    \item{nonlinear model - thus can represent nonlinear functions}
+    \item{provides reasoning behind the prediction}
+    \item{can be expressed as a logical rule by walking the branch from root to leaf}
+\end{itemize}
+
+\define{classification model}
+           {a mapping from vectors X to a categorical variable, called labels, classes}
+\define{regression model}
+           {a mapping from vectors X to real numbers}
+
+\begin{verbatim}
+Learning decision trees
+    Why prefer smaller trees
+        easy to interpret
+        more training instances per leaf node
+So - smallest decision tree, that is consistent with the training data.
+\end{verbatim}
+
+
+\subsection{Classification with categorical features: ID3}
+A greedy algorithm, which finds a small tree.
+polynomial complexity($n^{const}$) in the number of attributes
+\begin{verbatim}
+ID3(L):
+if all data in L has same class y, then return leaf node with class y else
+1. choose the attribute xj with the most homogeneous class distribution (max(GR_L(x_j))) 
+2. split L into one set per value of the attribute
+3. return a test node with xj and the subsets as children
+\end{verbatim}
+
+\define{n-optimal code}
+           {assign short code words to common events}
+
+\define{information of a message}
+           {$-\log_2 p(y=v)$, where $v$ - this specific message value}
+
+\define{expected information of a message(entropy)}
+           {$$ H(y) = -\sum_{v=1}^k p(y=v) \log_2 p(y=v) $$}
+
+\define{empirical entropy $H_L$}
+           {learned on sample L}
+
+\define{entropy of class labels}
+           {$H_L(y) = - \sum p(y_i) \log_2 p(y_i)$}
+
+\define{conditional entropy}
+           {$H_L(y|x=n) = -p_{x=n} \log p_{x=n} +
+                          -p_{x \neq n} \log p_{x \neq n}$}
+
+\define{information gain}
+           {reduction of entropy by splitting the data along an attribute}
+$$ G_L(x_j) = H_L(y) - \sum_{v=1}^k p_L(x_j=v) H_L(y|x_j=v) $$
+
+\define{entropy of an ATTRIBUTE}
+           {$$ H_L(x_j) = - \sum_{v=1}^k p_L(xj=v) logp_L(x_j=v) $$}
+
+\begin{verbatim}
+IG is biased towards many-valued attributes 
+e.g. matriculation number as predictor of exam performance
+it does not generalise well
+\end{verbatim}
+
+\define{information gain ratio}
+           {weight IG by the entropy of the attribute values}
+$$ GR_L(hj) = \frac{G_(x_j)}{H_L(x_j)} $$
+
+
+\subsection{Classification with continuous features: C4.5}
+We now label test nodes with \{attribute; threshold value\}.
+
+$$ G_L(x_j \leq v) = H_L(y) - p_L(x_j \leq v) H_L(y|x_j \leq v) - p_L(x_j > v) H_L(y|x_j > v)$$
+
+\begin{verbatim}
+if all data has the same class OR is identical, predict the majority class
+else
+    for categorical variables, calculate $GR_L(x_j)$
+        for each continuous attribute
+            for each value v_i it takes
+                calculate $GR_L(x_j \leq v_i)$
+    select a split
+        if discrete, split as ID3 and do recursion
+        if continuous, we create a binary node $x_j \leq v$ and do recursion
+\end{verbatim}
+
+Leaf nodes trained on very few training instances are not to be trusted.
+
+\define{pruning with support threshold}
+           {removing of leaf nodes, whose support is less than a threshold}
+
+\begin{verbatim}
+how it's done:
+    remove the leaf node
+    replace it's parent test node with a leaf note
+    it contains the majority class of both removed leaf nodes
+\end{verbatim}
+
+\define{reduced error pruning}
+           {train/test split, remove 1 leaf node from a trained tree, if loss is reduced, keep the change}
 
 \end{document}
