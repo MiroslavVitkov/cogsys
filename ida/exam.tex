@@ -21,7 +21,12 @@
            {n-dimensional probability distribution over n variables}
 \define{marginal distribution}
            {a joint distribution over a subset of the variables; the ignored variables are summed over}
-
+\define{information entropy}
+           {the average rate at which information is produced by a stochastic source of data}
+$$ H(X) = - \sum p(x_i) \log p(x_i) \text{,  [bits, nats, bans]}$$
+\para
+In the case of $p(x_i) = 0$ for some $i$, the value of the corresponding summand $0 \log(0)$ is taken to be 0, which is consistent with the limit:
+$$ \lim_{p \to 0+} p \log(p) = 0$$
 
 \section{Models, Data, Learning Problems}
 \subsection{Taxonomy of learning problems}
@@ -194,5 +199,19 @@ Some classes might exhibit missing values more often then others e.g. user provi
     \item{foreword/backward elimination - try model with 1 attribute, test, train with 2 attributes, test, if better continue}
     \item{for a linear model - train a model on all attributes, delete attributes with smallest weights, retrain}
 \end{itemize}
+
+
+\section{Decision trees}
+\define{test node}
+           {tests one attribute}
+\define{edge}
+           {one specific outcome of the testing}
+\define{terminal node}
+           {contains a prediction}
+
+Advantages:
+    understandable to a domain expert
+    fast predictions
+    nonlinear model - thus can represent nonlinear functions
 
 \end{document}
