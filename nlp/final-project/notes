@@ -1,0 +1,24 @@
+Proceedings of the 2011 Conference on Empirical Methods in Natural Language Processing
+, pages 1301–1309,
+Edinburgh, Scotland, UK, July 27–31, 2011.
+c
+©
+2011 Association for Computational Linguistics
+Discriminating Gender on Twitter
+John D. Burger
+John Henderson
+George Kim
+Guido Zarrella
+The MITRE Corporation
+
+- state of the art
+
+
+Delip Rao, David Yarowsky, Abhishek Shreevats, and Manaswi
+Gupta. 2010. Classifying latent user attributes in Twitter.
+In 2nd International Workshop on Search and Mining User-
+Generated Content. ACM.
+
+- corpus
+
+twitter sampling api - free, 1% of throughput
