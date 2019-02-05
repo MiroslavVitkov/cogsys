@@ -8,33 +8,40 @@
 This is an engineering/scientific project with privacy and security implications.
 
 \subsection{Primary Goals}
-One primary goal is to manufacture an autonomous computattional system.
+One primary goal is to manufacture an autonomous computational system.
 It is to consist of a generic software component and a vaguely specified hardware component.
-It must be robust(not crash) and exhibit false positive rate below 1 in 1 hour of continued observation of the same subject.
+It must be robust(not crash) and exhibit false positive rate below 1 in 20 encounters.
 \par
 Another primary goal is to explore which face recognition model or implementation is best suited to continuous updating.
-This carries the hallmarks of a classical computer science problem - time and space complexity are top priority.
+Scalability is paramount, but the format of this project doesn't provide fo such an advanced concept.
 
 \subsection{Secondary targets}
-\begin{enumerate}
-    \item{Acheave reasonable perfomance in low-light conditions - a true positive within the first 2 seconds}
+\begin{itemize}
+    \item{Achieve reasonable performance in low-light conditions - a true positive at least 9 times out of 10 encounters.}
     \item{Demonstrate system stability of at least MTBF=90 days.}
-    \item{Be cross-platform and free as in beer and as in speаch.}
+    \item{Be cross-platform and free as in beer and as in speech.}
     \item{Employ a minimal amount of reasonably popular tools to build and run.}
     \item{Run on an old i3 processor, no dedicated graphics and a 720p camera}
-\end{enumerate}
+\end{itemize}
 
-\section{Hypothesys}
+\section{Hypothesis}
 I expect the current state of art, Haar features, to be most practical.
 This will be tested by fitting it and at least 2 more models to the training data.
-Emphasys must be placed both on model selection and model training.
+Emphasis must be placed both on model selection and model training.
+\par
+Evaluation is going to be performed by comparing precision and recall scores over a single encounter with the same scores over a single image in literature.
+This is an optimistic approach but is somewhat counteracted by the bad operating conditions of the system.
+
 
 \section{Training Data}
 The training data will be collected privately and NOT published.
-The product's performance can subsecuently be tested on proliferated datasets, on which it is going to provide pessimistic performance values.
+The product's performance can subsequently be tested on proliferated datasts, on which it is going to provide pessimistic performance values.
+
+\section{Encounter}
+An encounter is defined as 2 continuous seconds during which the subject's face is exposed to the camera.
 
 \section{Conclusion}
-This project seeks to provide two deliverables.
+This project seeks to provide two deliverable.
 One is a functional software system.
-The other is an objective comparrison of face recognition algorithms in the context of learning new faces realtime.
+The other is an objective comparison of face recognition algorithms in the context of learning new faces real-time.
 \end{document}
