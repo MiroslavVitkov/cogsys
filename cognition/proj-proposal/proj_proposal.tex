@@ -1,4 +1,40 @@
 \documentclass{article}
+\title{Project Proposal: Face recognition in real time; learning new faces in real time}
+\author{'Miroslav Vitkov'}
 \begin{document}
-kur
+\maketitle
+
+\section{Goal}
+This is an engineering/scientific project with privacy and security implications.
+
+\subsection{Primary Goals}
+One primary goal is to manufacture an autonomous computattional system.
+It is to consist of a generic software component and a vaguely specified hardware component.
+It must be robust(not crash) and exhibit false positive rate below 1 in 1 hour of continued observation of the same subject.
+\par
+Another primary goal is to explore which face recognition model or implementation is best suited to continuous updating.
+This carries the hallmarks of a classical computer science problem - time and space complexity are top priority.
+
+\subsection{Secondary targets}
+\begin{enumerate}
+    \item{Acheave reasonable perfomance in low-light conditions - a true positive within the first 2 seconds}
+    \item{Demonstrate system stability of at least MTBF=90 days.}
+    \item{Be cross-platform and free as in beer and as in speаch.}
+    \item{Employ a minimal amount of reasonably popular tools to build and run.}
+    \item{Run on an old i3 processor, no dedicated graphics and a 720p camera}
+\end{enumerate}
+
+\section{Hypothesys}
+I expect the current state of art, Haar features, to be most practical.
+This will be tested by fitting it and at least 2 more models to the training data.
+Emphasys must be placed both on model selection and model training.
+
+\section{Training Data}
+The training data will be collected privately and NOT published.
+The product's performance can subsecuently be tested on proliferated datasets, on which it is going to provide pessimistic performance values.
+
+\section{Conclusion}
+This project seeks to provide two deliverables.
+One is a functional software system.
+The other is an objective comparrison of face recognition algorithms in the context of learning new faces realtime.
 \end{document}
