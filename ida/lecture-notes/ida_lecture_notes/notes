@@ -1,0 +1,8 @@
+problem: find_best_split wrong
+
+criterion: find highest information gain ratio
+information gain ratio: 
+information of a message: -log2(p)
+entropy: E(info) = sum(p_i*log(p_i))
+entropy of labels: i-s correspond to label _values_
+info gain G: entropy before test - sum(p*conditional entropy of the split)

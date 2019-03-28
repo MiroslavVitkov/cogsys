@@ -1,0 +1,23 @@
+Why class labels -1, +1? - sign() is quite conveninet in exponents in formulas; also when writing the gradient
+    if we chose 0 and 1 - we would need an if-then construct in the gradient
+Why for maximum a posteriori do we assume a centered prior? - X thita
+
+
+Exam:
+3 questions on all topics on all lectures.
+e.g. "how do you learn a decision tree on continuous attributes"
+e.g. "how does a random forest work"
+
+Is the mapping fi(x) specified ONLY via the kernel function? Or are they constructed by hand?
+  if K is positive semidefinite => exists a fi
+  we engineer either fi(x) OR K
+
+ML + L2 regularizer = MAP
+
+Linear regression:
+    regression - analytical solution - just multiply some matreces
+    classification - no analytical solution - use gradient descent
+
+Logistic regression:
+    uses the logistic function (sigmoid)
+    can be ML or MAP

@@ -1,0 +1,68 @@
+Data preprocessing:
+  Data intergration
+  Feature representation
+  Missing values
+  Feature selection
+
+Loss function
+
+Regularizer? Do we need it by default or only sometimes, when a problem is noticed?
+regularizer - prior knowledge
+data - actual model
+if we have a lot more data than model parameters and simple qustion and little prior knowledge, we don't need a regularizer 
+For a linear model, it can be derived statistically. Else one needs educated guesses or shotgun debugging.
+
+Too little vs too much data
+
+What is an attribute of data(slide 12)? Features? What are those? Decorrelated variables?
+The dimension of the input vector e.g. a colour picture 1000x1000 is 3 000 000 dimensional
+x - input data vector
+y - output prediction
+
+
+Rare vs often classes. Same frequency in training and test data (representivenes of data)?
+
+Unstationary processes. Coefficients as functions? ?!?!
+Different types of non-stationarity:
+change at random
+change stochastically
+change in response to the control input we produce (e.g. fraundient credit card transactions)
+retrin the model in short intervals
+game theory based models: you make some assumptions on what can/will the adversiery take: model their actions: now we are robust
+for non-stationary processes, n-fold cross-validation is useless; you can't just split data into test/evaluation
+what is an instance? is it a credit card transaction or all of his transactions
+ad-hoc: train on some viruses, test on unknown ones (or even an unknown virus family); also you need labeled training and evaluation data; you have to remove all instances of test viruses from the training data
+
+Merging data from different sources. Approaches? Data fusion?
+some overlapping attributes from several sources
+if the variable is going to be available at 'application time', it is more valuable than else
+
+Dependency within data. Astatism? How do we measure it?
+usually from background knowledge
+or (non-parametric tests) measure if two distributions are the same!
+related training problems (e.g. viruses and malicious servers) - they can help each other or be fused into one model
+
+What is relative entropy(Kullback-Leibler distance). Why is it 'not a true metri'. Because it is asymetric. Then how do we select a first and second distribution? http://mathworld.wolfram.com/RelativeEntropy.html
+
+The class is a regex.
+
+slide24: loss function: how do we know the 'correct regular expression, written by a human administrator'
+
+cross-validation?
+
+Evaluation - is the system working well
+
+slide 35: large attribute values?
+
+covariate shift - change in the distribuon of input vectors
+e.g. train a medical system; then sell in a far away country
+a way to cope - look at (inexpensive) unlabeled data in order to readjust the model by changing the weights of the labeled data
+
+normalization: background knowledge, experimentation
+next lecture: decision trees and random forests: they don't care what type and value range of attributes they use
+pay attention to initialize the parametres consistently with their ranges
+z-scaling - for Gaussian distributions - subtract mean and devide by standard deviation -> nice bell curve
+if we have exponentials, we need to do a logarithm before linear modeling
+squared loss of incomes - we must get Bill Gates correctly
+
+feature == attribute

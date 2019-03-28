@@ -1,0 +1,12 @@
+logistic function
+sigmoid
+softmax
+
+
+Generative adversarial network - reverse Turing test
+
+
+input - bottleneck layer - output
+input and perfect output are the same
+after being tained, remove the output layer
+all the high-level features of the net are encoded in the few bottleneck neurons

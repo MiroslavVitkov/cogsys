@@ -1,0 +1,44 @@
+split data into 1 2 and 3
+train on 1
+evaluate on 2
+repeat until optimum hyperparameters are determined
+fix them and train a model on 1 + 2
+evaluate on 3
+
+alternative(when we don't have a ton of data): nested cross validation
+gives a performance estimate of a model
+which is used to estimate hyperparameters
+
+risk - expected loss over distribution of outputs
+
+slide 50 - don't average sigma; perform plain cross-validation to determine it
+
+(k-fold cross-validation)
+100-fold cross-validation - train on 99% of data, test on 1%, repeat 100 times, average the risk over datapoints
+
+
+####################
+
+empirical risk R = 1/n sum[i=1:n](loss(model(x), y))
+
+unbiased estimator: the expected value of the estimator is the true quantity
+
+accuracy
+
+precision = TP / (TP + FP)
+
+recall = TP / (TP + FN)
+
+Receiver Operatin Curve
+
+area under curve  AUC = P( f(x+) > f(x-) ) i.e. the probability that the decision function value for a positive isntance is greater
+
+holdout testing - used for large datasets, else high variance or high risk bias
+
+small dataset - k-fold cross-validation
+
+cross validation
+
+triple cross validation
+
+nested cross validation - for very few datapoints
