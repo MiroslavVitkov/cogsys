@@ -1,5 +1,7 @@
 \documentclass{article}
 
+\newcommand{\face}[0]{\textit{face}}
+
 
 \title{}
 \author{Miroslav Vitkov}
@@ -12,7 +14,64 @@
 \maketitle
 
 
-\section{}
+\section{Introduction}
+This report describes the manufacturing of a software tool for use in face recognition applications.
+
+
+\section{Goal}
+The design goal of \face is to be a framework for classifying objects in single camera videos.
+Furthermore, human faces recognision should work out of the box and more flexibly than just training a model on a compiled dataset.
+
+
+\section{IO Capabilities}
+\face is able to read from a camera, a video file or a dataset of faces.
+The dataset must be organised as follows: one folder per subjects, samples are cropped grayscale faces.
+\par
+It can write to a video player, video file or a dataset of faces.
+\par
+Because this is just a thin wrapper over OpenCV, the overhead, compared to using raw OpenCV, should be negleagable.
+\par
+Because the written dataset comprises of single channel cropped faces in a compressed picture format (JPG), it is extremely space-efficient, 
+beaten only by a trained model.
+
+
+\section{Algorithms}
+\face features Local Binary Pattern cascades for both face detection and recognition.
+The algorithm is run with it's default parameters - no fine tuning has been carried out.
+OpenCV further features the Eigenfaces and Fisherfaces face recognisers.
+\par
+Labels are stored internally as integers, but provided by the API as strings for convenience.
+
+
+\section{Design}
+The implementation uses the Command design pattern to isolate conceptually different actions the software is able to complete.
+This permits the implementaton of new functonalty without modifying old code.
+\par
+Read and written corpora are represented as streams of streams.
+This approach has the advantages of easy iteration and lazy evaluation.
+\par
+The proliferal usage of namespaces fasciliates segregation of interfaces.
+And the lack of statically initialized data guarantees the deterministic order of constructor invocations.
+
+
+\section{Toolchain}
+GNU GCC was the chosen compiler with CMake the meta build system.
+The compiler was instructed comply to C++20 specification with extensions turned off.
+Thus, the code should build on any compliand compiler.
+Features from beyond C++11 were not used.
+
+
+\section{Artefact}
+\face is free software, licensed under the MIT permissive license.
+It has been tested on a Debian machine with libopencv-dev package installed, but should work on other UNIX systems well. 
+
+
+\section{Possible Applications}
+\begin{itemize}
+    \item{Record a corpus of faces or other objects from either video frames or a camera over multiple sessions.}
+    \item{If training and recognition are concurrently run, get to know new faces in real time.}
+    \item{Compare other face recognision algorithms, such as Eigenfaces, Fisherfaces, which require the whole dataset to be in main memory.}
+\end{itemize}
 
 
 \end{document}
