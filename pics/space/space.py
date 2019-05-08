@@ -29,7 +29,15 @@ def visualize_regions(image, regions):
     plt.show()
 
 
-fig = plt.gcf()
-image = vg.get_image_data(id=61512)
-regions = vg.get_region_descriptions_of_image(id=61512)
-visualize_regions(image, regions[:8])
+def get_next():
+    ids = vg.get_all_image_ids()
+    for id in ids:
+        image = vg.get_image_data(id)
+        regions = vg.get_region_descriptions_of_image(id)
+        yield image, regions
+
+
+for image, regions in get_next():
+    visualize_regions(image, regions[:8])
+    break
+
