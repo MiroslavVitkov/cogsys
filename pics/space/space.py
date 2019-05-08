@@ -22,8 +22,8 @@ def visualize_regions(image, regions):
                                region.height,
                                fill=False,
                                edgecolor='red',
-                               linewidth=3))
-        ax.text(region.x, region.y, region.phrase, style='italic', bbox={'facecolor':'white', 'alpha':0.7, 'pad':10})
+                               linewidth=1))
+        ax.text(region.x, region.y, region.phrase, style='italic', bbox={'facecolor':'white', 'alpha':0.4, 'pad':10})
     fig = plt.gcf()
     plt.tick_params(labelbottom='off', labelleft='off')
     plt.show()
@@ -38,6 +38,7 @@ def get_next():
 
 
 for image, regions in get_next():
+    print('Processing image with id ', image.id)
     visualize_regions(image, regions[:8])
     break
 
