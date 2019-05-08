@@ -5,15 +5,14 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from PIL import Image
 import requests
-from io import StringIO
+from io import BytesIO
 from visual_genome import api as vg
 
 
 def visualize_regions(image, regions):
     response = requests.get(image.url)
-    f = open('tmp.jpg', 'bw')
-    f.write(response.content)
-    img = Image.open('tmp.jpg')
+    file = BytesIO(response.content)
+    img = Image.open(file)
     plt.imshow(img)
 
     ax = plt.gca()
