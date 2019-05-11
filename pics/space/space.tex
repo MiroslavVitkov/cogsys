@@ -1,10 +1,11 @@
 \documentclass{article}
 
 
-\usepackage[backend=bibtex]{biblatex}
+\usepackage[backend=bibtex, citestyle=authoryear]{biblatex}
 \bibliography{space}
 
-\newcommand{\face}[0]{\textit{face }}
+
+\newcommand{\face}[0]{\textit{face}}
 \newcommand{\para}[0]{\\ \par \noindent}
 
 
@@ -30,13 +31,13 @@ The rules are evaluated and if false, the image, relationship and bounding boxes
 \section{Purpose}
 The Visual Genome is an impressive dataset used currently and in the future.
 It was generated using a large number of human workers.
-Software heuristics were deployed to guarantee the high quality of the data(diversity in data and questions, melding of bounding boxes etc.).\cite{krishna}
+Software heuristics were deployed to guarantee the high quality of the data(diversity in data and questions, melding of bounding boxes etc.)\parencite{krishna}.
 
 Nevertheless, due to the sheer amount of data points, I expect to find some errors in the annotations.
 
 
 \section{Parsing Relationships}
-Space and time are deeply ingrained in the human psychology.\cite{zlatev}
+Space and time are deeply ingrained in the human psychology\parencite{zlatev}.
 This results in severe difficulties in differentiating actual spatial expressions from figurative ones.
 For example(image id = 1) "the clock is green in colour" or "a bike in the distance".
 Differentiating between verbatim and figurative spatial relationships is a research topic in itself.
@@ -50,7 +51,7 @@ This task is a perfect candidate for unsupervised learning.
 Armed with a spatial relationship detector and the coordinates of the bounding boxes, it should be easy to detect outliers.
 
 A less sophisticated approach is to hand craft the rules.
-This is facilitate by the zipfian distribution of relationship frequency, many of the top relationships being spatial.\cite{krishna} 
+This is facilitate by the zipfian distribution of relationship frequency, many of the top relationships being spatial\parencite{krishna}. 
 For example, "on" can be modelled as "the bottom of the object's bounding box must be above the bottom of the subject's bounding box".
 Or "in" - "the subject's bounding box must be completely encompassed by the object's bounding box".
 
