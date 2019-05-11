@@ -1,6 +1,9 @@
 all:
-	pdflatex space.tex  && \
+	pdflatex --output-directory /tmp space.tex  && \
+	cp space.bib /tmp && \
+	cd /tmp  && \
 	bibtex space  && \
-	pdflatex space.tex  && \
-	pdflatex space.tex  && \
-	evince space.pdf
+	cd -  && \
+	pdflatex --output-directory /tmp space.tex  && \
+	pdflatex --output-directory /tmp space.tex  && \
+	evince /tmp/space.pdf
