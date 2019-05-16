@@ -14,6 +14,7 @@ from zipfile import ZipFile
 
 
 DATA_DIR = './data/'
+PREDICATES = ['on top of']
 
 
 def visualize_regions(image, regions):
@@ -42,7 +43,7 @@ def visualize_regions(image, regions):
 
 def get_next_remote(ids=None):
     if ids is None:
-        ids = vgr.get_all_image_ids()
+        ids = vgr.get_all_image_ids()  # ids start from 1
 
     for id in ids:
         image = vgr.get_image_data(id)
@@ -86,8 +87,21 @@ def download_dataset(path=DATA_DIR):
         download_zip(path, 'http://visualgenome.org/static/data/dataset/synsets.json.zip')
 
 
-for image, regions, graph in get_next_local(ids=[1]):
-    print('Processing image with id', image.id)
-    r = graph.relationships[0]
-    print(r, 'OBJ', r.object, 'PRED', r.predicate, 'SUBJ', r.subject, 'SYNSET', r.synset)
-    visualize_regions(image, regions[:8])
+def is_relation_spatial(relation):
+    if relation.predicate in (PREDICATES):
+        return True
+    else:
+        return False
+
+
+def main():
+    for image, regions, graph in get_next_local(ids=range(1, 100)):
+        print('Processing image with id', image.id)
+        for r in graph.relationships:
+            if is_relation_spatial(r):
+                print('SUBJ:', r.subject, 'PRED:', r.predicate, 'OBJ:', r.object, 'SYNSET:', r.synset)
+            #visualize_regions(image, regions[:8])
+
+
+if __name__ == '__main__':
+    main()
