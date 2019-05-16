@@ -95,12 +95,18 @@ def is_relation_spatial(relation):
 
 
 def main():
-    for image, regions, graph in get_next_local(ids=range(1, 100)):
+    for image, regions, graph in get_next_local(ids=range(1, 1000)):
         print('Processing image with id', image.id)
         for r in graph.relationships:
             if is_relation_spatial(r):
                 print('SUBJ:', r.subject, 'PRED:', r.predicate, 'OBJ:', r.object, 'SYNSET:', r.synset)
-            #visualize_regions(image, regions[:8])
+                if not r.subject.y > r.object.y + r.object.height:
+                    print('VIOLATION')
+                    # Draw subject and object bounding boxes for verification by a human operator.
+                    for reg in regions:
+                        if reg.id == r.subject.id:
+                            print('CONFIRMED')
+                            visualize_regions(image, regions[:8])
 
 
 if __name__ == '__main__':
