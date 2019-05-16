@@ -37,7 +37,9 @@ def visualize_regions(image, regions):
     plt.show()
 
 
-def get_next(ids=vg.get_all_image_ids()):
+def get_next(ids=None):
+    if ids is None:
+        ids = vg.get_all_image_ids()
     for id in ids:
         image = vg.get_image_data(id)
         regions = vg.get_region_descriptions_of_image(id)
