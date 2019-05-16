@@ -9,6 +9,7 @@ from PIL import Image
 import requests
 import urllib
 from visual_genome import api as vg
+from visual_genome import local as vgl
 from zipfile import ZipFile
 
 
@@ -51,14 +52,22 @@ def download_zip(path, url):
         zip.extractall(path)
 
 
-def download_dataset(path='/tmp'):
+def download_dataset(path='data/'):
     if not isfile(path+'/image_data.json'):
         download_zip(path, 'http://visualgenome.org/static/data/dataset/image_data.json.zip')
     if not isfile(path+'/region_descriptions.json'):
         download_zip(path, 'http://visualgenome.org/static/data/dataset/region_descriptions.json.zip')
+    if not isfile(path+'/scene_graphs.json'):
+        download_zip(path, 'http://visualgenome.org/static/data/dataset/scene_graphs.json.zip')
+        vgl.save_scene_graphs_by_id(data_dir='data/', image_data_dir='data/by-id/')
+    if not isfile(path+'/synsets.json'):
+        download_zip(path, 'http://visualgenome.org/static/data/dataset/synsets.json.zip')
 
 
 download_dataset()
+
+#scene_graphs = vgl.get_scene_graphs(start_index=0, end_index=-1, min_rels=1,
+#                                    data_dir='data/', image_data_dir='data/by-id/')
 
 #_, _, graph = get_next(ids=[1])
 #r = graph.relationships[0]
