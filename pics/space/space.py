@@ -3,10 +3,13 @@
 
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
+from io import BytesIO
+from os.path import isfile
 from PIL import Image
 import requests
-from io import BytesIO
+import urllib
 from visual_genome import api as vg
+from zipfile import ZipFile
 
 
 def visualize_regions(image, regions):
@@ -37,12 +40,34 @@ def get_next(ids=vg.get_all_image_ids()):
     for id in ids:
         image = vg.get_image_data(id)
         regions = vg.get_region_descriptions_of_image(id)
-        yield image, regions
+        graph = vg.get_scene_graph_of_image(id)
+        yield image, regions, graph
 
 
-for image, regions in get_next():
-    print('Processing image with id ', image.id)
-    for region in regions:
-        print(region.phrase)
-    #visualize_regions(image, regions[:8])
+def download_zip(path, url):
+    with urllib.request.urlopen(url) as response:
+        stream = BytesIO(response.read())
+        zip = ZipFile(stream)
+        zip.extractall(path)
+
+
+def download_dataset(path='/tmp'):
+    if not isfile(path+'/image_data.json'):
+        download_zip(path, 'http://visualgenome.org/static/data/dataset/image_data.json.zip')
+    if not isfile(path+'/region_descriptions.json'):
+        download_zip(path, 'http://visualgenome.org/static/data/dataset/region_descriptions.json.zip')
+
+
+download_dataset()
+
+#_, _, graph = get_next(ids=[1])
+#r = graph.relationships[0]
+#print(r, 'OBJ', r.object, 'PRED', r.predicate, 'SUBJ', r.subject, 'SYNSET', r.synset)
+
+
+#for image, regions in get_next([1]):
+#    print('Processing image with id', image.id)
+#    for region in regions:
+#        print(region.phrase)
+#    #visualize_regions(image, regions[:8])
 
