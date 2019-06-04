@@ -1,0 +1,65 @@
+1. Isolate bounding boxes which can contain or not contain an object.
+   This is a regression task.
+   We borrow a trained model from image classification[quote paper]
+   [image of VGG-16 architecture]
+
+2. The fully connected layers are too task-specific.
+   We trow away the last one and convert the rest to convolutional layers (why)?
+   Fully connected and convolutional layers are equivelent - and with the same coefficients, just reshaped.  [for convnet with size of image; why is Base Convolutions – part 2 mentioning 7x7!?]
+   subsampling of filter parameters
+
+# what is As per the paper,
+
+
+3. Priors
+   A range of possible shapes and sizes of object bounding boxes, based on the training set.
+   Applied on some of the layers.  [why?]
+   Larger feature maps get smaller priors, thust being able to detect smaller objects. [why?]
+   Grand total 8732, about half.
+   scale: w * h = s^2
+   aspect ratio: w / h = a
+
+
+4. Bounding box coordinate systems
+   x0, y0, x1, y1
+   x0, y0, w, h  // top left
+   x0, y0, w, h  // center
+   x0, y0, w, h  // offset from prior  // this is what we regress
+
+
+5. Prediction
+   like a for(), bounding box regression and class assignment are performed efficiently in one pass of the CNN
+   [prediction convolution visual]
+
+
+6. Interpretation
+   [24 channels visual]
+   regression -> 6 boxes * 4 coordinates per box = 24 adjustments
+   classification -> 6 priors * n classes = 6n class scores
+
+
+7. Loss function
+   aggreage of regression and classification losses
+   [show the questions]
+   Smooth loss L1 [smooth?]
+   most labels are "background" [so how do we prevent the model from always predicting that]
+   total loss = [???]
+
+
+8. Hard negative mining
+   by using only a part of the negative samples
+   which part? those predictions where the model found it hardest to recognize that there are no objects
+   and those are the ones with highest cross-entropy loss
+   
+
+9. Matching boxes to ground truth object boxes
+   if overlav > 0.5 then positive instance else negative instance
+   all valid boxes become ground truths for both regression and classification
+
+
+10. Non maximum supression
+    From multiuple boxes trying to math a single object, drop all but the most probable one per class. [how do we compute the likelihood?]
+
+8. Implementation
+   quite large: 948 LOC with up to 120 character long lines
+   [write a program to download the datasets]
