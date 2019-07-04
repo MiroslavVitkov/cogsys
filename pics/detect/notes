@@ -60,6 +60,6 @@
 10. Non maximum supression
     From multiuple boxes trying to math a single object, drop all but the most probable one per class. [how do we compute the likelihood?]
 
-8. Implementation
+11. Implementation
    quite large: 948 LOC with up to 120 character long lines
    [write a program to download the datasets]
